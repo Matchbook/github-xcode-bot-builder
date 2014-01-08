@@ -31,7 +31,7 @@ class BotGithub
       bots_processed << br.bot_short_name
       if (bot.nil?)
         # Create a new bot
-        BotBuilder.instance.create_bot(br.bot_short_name, br.bot_long_name, br.name,
+        BotBuilder.instance.create_bot(br.bot_short_name, br.bot_long_name, br.bot_long_name,
                                        BotConfig.instance.scm_path,
                                        BotConfig.instance.xcode_project_or_workspace,
                                        BotConfig.instance.xcode_scheme,
