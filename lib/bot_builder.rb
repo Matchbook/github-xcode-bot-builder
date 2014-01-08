@@ -120,6 +120,7 @@ class BotBuilder
         puts "#{bot.guid}"
       else
         puts "#{bot.guid} #{bot.short_name} #{bot.latest_run_status} #{bot.latest_run_sub_status}"
+      end
     end
   end
 
