@@ -36,21 +36,21 @@ class BotGithub
                                        BotConfig.instance.xcode_project_or_workspace,
                                        BotConfig.instance.xcode_scheme,
                                        BotConfig.instance.xcode_devices)
-        #create_status_new_build(br)
+        create_status_new_build(br)
       else
         github_state_cur = latest_github_state(br).state # :unknown :pending :success :error :failure
         github_state_new = convert_bot_status_to_github_state(bot)
         if (github_state_new == :pending && github_state_cur != github_state_new)
           # User triggered a new build by clicking Integrate on the Xcode server interface
-          #create_status(br, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
+          create_status(br, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
         elsif (github_state_new != :unknown && github_state_cur != github_state_new)
           # Build has passed or failed so update status and comment on the issue
           #create_comment_for_bot_status(br, bot)
-          #create_status(br, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
+          create_status(br, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
         elsif (github_state_cur == :unknown || user_requested_retest(br, bot))
           # Unknown state occurs when there's a new commit so trigger a new build
           BotBuilder.instance.start_bot(bot.guid)
-          #create_status_new_build(br)
+          create_status_new_build(br)
         else
           puts "BR #{br.bot_short_name} (#{github_state_cur}) is up to date for bot #{bot.short_name}"
         end
