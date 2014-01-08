@@ -31,7 +31,7 @@ class BotGithub
       bots_processed << br.bot_short_name
       if (bot.nil?)
         # Create a new bot
-        BotBuilder.instance.create_bot(br.bot_short_name, br.bot_long_name, br.bot_long_name,
+        BotBuilder.instance.create_bot(br.bot_short_name, br.bot_long_name, br.name,
                                        BotConfig.instance.scm_path,
                                        BotConfig.instance.xcode_project_or_workspace,
                                        BotConfig.instance.xcode_scheme,
@@ -171,6 +171,7 @@ class BotGithub
     responses.each do |response|
       br = OpenStruct.new
       br.ref = response.ref
+      br.name = "#{br.ref}".sub('refs/heads/', '')
       br.sha = response.object.sha
       br.bot_short_name = branch_bot_short_name(br)
       br.bot_short_name_without_version = branch_bot_short_name_without_version(br)
@@ -232,7 +233,7 @@ class BotGithub
   end
 
   def branch_bot_long_name(br)
-    "BR #{br.ref}".sub('refs/heads/', '')
+    "BR #{br.name}"
   end
 
   def branch_bot_short_name(br)
