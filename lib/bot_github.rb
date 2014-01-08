@@ -26,6 +26,7 @@ class BotGithub
     bots_processed = []
 
     branches.each do |br|
+      puts "Found branch #{br}"
       # Check if a bot exists for this BR
       bot = bot_statuses[br.bot_short_name_without_version]
       bots_processed << br.bot_short_name
@@ -36,7 +37,7 @@ class BotGithub
                                        BotConfig.instance.xcode_project_or_workspace,
                                        BotConfig.instance.xcode_scheme,
                                        BotConfig.instance.xcode_devices)
-        create_status_new_build(pr)
+        #create_status_new_build(br)
       else
         github_state_cur = latest_github_state(br).state # :unknown :pending :success :error :failure
         github_state_new = convert_bot_status_to_github_state(bot)
@@ -47,7 +48,7 @@ class BotGithub
           # Build has passed or failed so update status and comment on the issue
           #create_comment_for_bot_status(pr, bot)
           #create_status(pr, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
-        elsif (github_state_cur == :unknown || user_requested_retest(pr, bot))
+        elsif (github_state_cur == :unknown || user_requested_retest(br, bot))
           # Unknown state occurs when there's a new commit so trigger a new build
           #BotBuilder.instance.start_bot(bot.guid)
           #create_status_new_build(pr)
@@ -169,6 +170,7 @@ class BotGithub
     brs = []
     responses.each do |response|
       br = OpenStruct.new
+      br.ref = response.ref
       br.sha = response.object.sha
       br.bot_short_name = branch_bot_short_name(br)
       br.bot_short_name_without_version = branch_bot_short_name_without_version(br)
