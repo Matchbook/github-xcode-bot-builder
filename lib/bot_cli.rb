@@ -25,7 +25,7 @@ def delete(args)
   end
 
   def status(args)
-    BotBuilder.instance.status
+    BotBuilder.instance.status args[0]
   end
 
   def devices(args)
@@ -33,7 +33,7 @@ def delete(args)
   end
 
   def sync_github(args)
-    BotGithub.instance.sync
+    BotGithub.instance.sync 
   end
 
 end

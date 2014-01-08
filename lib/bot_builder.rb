@@ -113,10 +113,13 @@ class BotBuilder
     statuses
   end
 
-  def status
+  def status(arg0)
     status_of_all_bots.values.each do |bot|
       #puts "#{bot.status_url} #{bot.latest_run_status} #{bot.latest_run_sub_status}"
-      puts "#{bot.guid} #{bot.short_name} #{bot.latest_run_status} #{bot.latest_run_sub_status}"
+      if (arg0 == 'guidonly') #This is handy to list all GUIDs in a clean list for batch deleting
+        puts "#{bot.guid}"
+      else
+        puts "#{bot.guid} #{bot.short_name} #{bot.latest_run_status} #{bot.latest_run_sub_status}"
     end
   end
 
