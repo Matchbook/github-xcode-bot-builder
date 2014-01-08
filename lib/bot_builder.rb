@@ -115,7 +115,8 @@ class BotBuilder
 
   def status
     status_of_all_bots.values.each do |bot|
-      puts "#{bot.status_url} #{bot.latest_run_status} #{bot.latest_run_sub_status}"
+      #puts "#{bot.status_url} #{bot.latest_run_status} #{bot.latest_run_sub_status}"
+      puts "#{bot.guid} #{bot.short_name} #{bot.latest_run_status} #{bot.latest_run_sub_status}"
     end
   end
 
