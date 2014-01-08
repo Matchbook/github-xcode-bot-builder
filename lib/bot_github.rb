@@ -26,7 +26,6 @@ class BotGithub
     bots_processed = []
 
     branches.each do |br|
-      puts "Found branch #{br}"
       # Check if a bot exists for this BR
       bot = bot_statuses[br.bot_short_name_without_version]
       bots_processed << br.bot_short_name
@@ -50,7 +49,7 @@ class BotGithub
           #create_status(br, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
         elsif (github_state_cur == :unknown || user_requested_retest(br, bot))
           # Unknown state occurs when there's a new commit so trigger a new build
-          #BotBuilder.instance.start_bot(bot.guid)
+          BotBuilder.instance.start_bot(bot.guid)
           #create_status_new_build(br)
         else
           puts "BR #{br.bot_short_name} (#{github_state_cur}) is up to date for bot #{bot.short_name}"
@@ -233,13 +232,12 @@ class BotGithub
   end
 
   def branch_bot_long_name(br)
-    github_repo = BotConfig.instance.github_repo
-    "BR #{br.ref} #{github_repo}"
+    "BR #{br.ref}".sub('refs/heads/', '')
   end
 
   def branch_bot_short_name(br)
-    short_name = "#{br.ref}".gsub(/[^[:alnum:]]/, '_') + bot_short_name_suffix
-    short_name
+    long_name = branch_bot_long_name(br)
+    "#{long_name}".gsub(/[^[:alnum:]]/, '_') + bot_short_name_suffix
   end
 
   def bot_long_name(pr)
