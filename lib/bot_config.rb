@@ -59,16 +59,16 @@ class BotConfig
     param :xcode_project_or_workspace
   end
 
+  # nil values are allowed to be returned below
   def aws_access_key_id
-    param :aws_access_key_id
+    :aws_access_key_id
   end
 
   def aws_access_secret_key
-    param :aws_access_secret_key
+    :aws_access_secret_key
   end
 
   def aws_upload_bucket(br)
-    # Nil values are allowed to be returned here
     :aws_upload_bucket_dict[br]
   end
 

@@ -6,9 +6,17 @@ class BotAWS
   include Singleton
 
   def initialize
+    aws_access_key_id = BotConfig.instance.aws_access_key_id
+    aws_access_secret_key = BotConfig.instance.aws_access_secret_key
+    if ( ! aws_access_key_id || ! aws_access_secret_key)
+      $stderr.puts "Amazon access keys missing."
+      PP.pp("Amazon access keys missing.", STDERR)
+      exit 1
+    end
+
     AWS.config({
-    :access_key_id => BotConfig.aws_access_key_id,
-    :secret_access_key => BotConfig.aws_access_secret_key,
+      :access_key_id => aws_access_key_id,
+      :secret_access_key => aws_access_secret_key,
     })
     @s3 = AWS::S3.new
   end

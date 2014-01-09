@@ -92,7 +92,7 @@ class BotBuilder
     # After completion: latest_run_status "completed" run_sub_status "build-failed|build-errors|test-failures|warnings|analysis-issues|succeeded"
     service_requests = [ service_request('query:', [
         {
-            fields: ['guid','tinyID','latestRunStatus','latestRunSubStatus', 'scmInfo'],
+            fields: ['guid','tinyID','latestRunStatus','latestRunSubStatus', 'extendedAttributes'],
             entityTypes: ["com.apple.entity.Bot"]
         }
     ], 'SearchService') ]
@@ -113,14 +113,12 @@ class BotBuilder
     statuses
   end
 
-  def status(arg0)
+  def status
     status_of_all_bots.values.each do |bot|
-      #puts "#{bot.status_url} #{bot.latest_run_status} #{bot.latest_run_sub_status}"
-      if (arg0 == 'guidonly') #This is handy to list all GUIDs in a clean list for batch deleting
+      if ('guidonly' == arg0) #This is handy to list all GUIDs in a clean list for batch deleting
         puts "#{bot.guid}"
       else
         puts "#{bot.guid} #{bot.short_name} #{bot.latest_run_status} #{bot.latest_run_sub_status}"
-      end
     end
   end
 
