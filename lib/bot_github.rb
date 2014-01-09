@@ -40,6 +40,7 @@ class BotGithub
       else
         github_state_cur = latest_github_state(br).state # :unknown :pending :success :error :failure
         github_state_new = convert_bot_status_to_github_state(bot)
+        puts "#{bot.long_name} cur:#{github_state_cur} new:#{github_state_new}"
         if (github_state_new == :pending && github_state_cur != github_state_new)
           # User triggered a new build by clicking Integrate on the Xcode server interface
           puts "Manually triggered on #{br.name}"
