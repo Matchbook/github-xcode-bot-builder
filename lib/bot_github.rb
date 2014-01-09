@@ -49,6 +49,7 @@ class BotGithub
           create_status(br, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
         elsif (github_state_cur == :unknown || user_requested_retest(br, bot))
           # Unknown state occurs when there's a new commit so trigger a new build
+          puts "New commit on #{br.name}"
           BotBuilder.instance.start_bot(bot.guid)
           create_status_new_build(br)
         else
