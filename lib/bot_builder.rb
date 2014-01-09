@@ -92,7 +92,13 @@ class BotBuilder
     # After completion: latest_run_status "completed" run_sub_status "build-failed|build-errors|test-failures|warnings|analysis-issues|succeeded"
     service_requests = [ service_request('query:', [
         {
-            fields: ['guid','tinyID','latestRunStatus','latestRunSubStatus', 'longName'],
+            fields: [
+              'guid',
+              'tinyID',
+              'latestRunStatus',
+              'latestRunSubStatus',
+              'longName',
+              'latestSuccessfulBotRunGUID'],
             entityTypes: ["com.apple.entity.Bot"]
         }
     ], 'SearchService') ]
@@ -108,7 +114,6 @@ class BotBuilder
       bot.short_name_without_version = bot.short_name.sub(/_v\d*$/, '_v')
       statuses[bot.short_name_without_version] = bot
     end
-    puts "All Bots:#{statuses}"
     statuses
   end
 

@@ -3,6 +3,7 @@ require 'singleton'
 require 'bot_config'
 require 'bot_builder'
 require 'ostruct'
+require 'bot_aws'
 
 class BotGithub
   include Singleton
@@ -54,6 +55,13 @@ class BotGithub
             # Build has passed or failed
             puts "Update status on #{br.name}"
             create_status(br, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
+          elsif (github_state_new == :success)
+            puts "BR #{br.bot_long_name} passed!"
+            upload_bucket = BotConfig.instance.aws_upload_bucket(br.name.sub('BR ', ''))
+            if (upload_bucket)
+              BotAWS.instance.upload_build(bot, upload_bucket)
+              puts "Uploading..."
+            end
           else
             puts "BR #{br.bot_long_name} (#{github_state_cur}) is up to date for bot #{bot.long_name}"
           end
