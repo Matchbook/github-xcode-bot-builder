@@ -2,6 +2,7 @@ source "http://rubygems.org"
 
 gem "octokit", "~> 2.0"
 gem "parseconfig", "~> 1.0.2"
+gem "aws-sdk", "~> 1.31.3"
 
 group :development do
   gem "rspec", "~> 2.8.0"
