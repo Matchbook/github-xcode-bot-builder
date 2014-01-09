@@ -98,8 +98,6 @@ class BotBuilder
     ], 'SearchService') ]
     status_info = batch_service_request(service_requests)
     results =  status_info['responses'][0]['response']['results']
-    response = status_info['responses'][0]
-    puts "Response: #{response}"
     statuses = {}
     results.each do |result|
       bot = OpenStruct.new result['entity']
