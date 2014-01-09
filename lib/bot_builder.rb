@@ -92,12 +92,14 @@ class BotBuilder
     # After completion: latest_run_status "completed" run_sub_status "build-failed|build-errors|test-failures|warnings|analysis-issues|succeeded"
     service_requests = [ service_request('query:', [
         {
-            fields: ['guid','tinyID','latestRunStatus','latestRunSubStatus'],
+            fields: ['guid','tinyID','latestRunStatus','latestRunSubStatus', 'scmInfo'],
             entityTypes: ["com.apple.entity.Bot"]
         }
     ], 'SearchService') ]
     status_info = batch_service_request(service_requests)
     results =  status_info['responses'][0]['response']['results']
+    response = status_info['responses'][0]
+    puts "Response: #{response}"
     statuses = {}
     results.each do |result|
       bot = OpenStruct.new result['entity']
@@ -199,9 +201,7 @@ class BotBuilder
     response = http.request(request)
     json = JSON.parse(response.body)
     response_status = json['responses'][0]['responseStatus']
-    response1 = json['responses']
     puts "Result status #{response_status}"
-    puts "Result: #{response1}"
     json
   end
 
