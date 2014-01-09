@@ -23,6 +23,8 @@ class BotConfig
       :xcode_scheme,
       :xcode_project_or_workspace,
       # These parameters are optional
+      #:test_on_pull_request,
+      #:test_on_branch_creation,
       #:aws_access_key_id,
       #:aws_access_secret_key,
       #:aws_upload_bucket_dict
@@ -59,6 +61,14 @@ class BotConfig
     param :xcode_project_or_workspace
   end
 
+  def test_on_pull_request
+    (:test_on_pull_request ?: true)
+  end
+
+  def test_on_branch_creation
+    (:test_on_branch_creation ?: false)
+  end
+
   # nil values are allowed to be returned below
   def aws_access_key_id
     :aws_access_key_id
@@ -80,5 +90,5 @@ class BotConfig
     end
     value
   end
-  
+
 end
