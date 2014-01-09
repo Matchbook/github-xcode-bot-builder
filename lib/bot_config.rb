@@ -62,11 +62,11 @@ class BotConfig
   end
 
   def test_on_pull_request
-    (:test_on_pull_request ?: true)
+    (:test_on_pull_request ? :test_on_pull_request : true)
   end
 
   def test_on_branch_creation
-    (:test_on_branch_creation ?: false)
+    (:test_on_branch_creation ? :test_on_branch_creation : false)
   end
 
   # nil values are allowed to be returned below
