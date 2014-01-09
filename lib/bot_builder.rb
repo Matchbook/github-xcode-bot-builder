@@ -108,6 +108,7 @@ class BotBuilder
       bot.short_name_without_version = bot.short_name.sub(/_v\d*$/, '_v')
       statuses[bot.short_name_without_version] = bot
     end
+    puts "SCMInfo: #{get_scm_info}"
     statuses
   end
 

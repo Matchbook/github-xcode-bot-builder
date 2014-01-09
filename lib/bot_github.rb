@@ -58,8 +58,6 @@ class BotGithub
         end
       end
     end
-
-    puts "SCMInfo: #{BotBuilder.instance.get_scm_info}"
 =begin
     pull_requests.each do |pr|
       # Check if a bot exists for this PR
