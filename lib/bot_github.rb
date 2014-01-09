@@ -40,7 +40,6 @@ class BotGithub
       else
         github_state_cur = latest_github_state(br).state # :unknown :pending :success :error :failure
         github_state_new = convert_bot_status_to_github_state(bot)
-        puts "#{bot.long_name} cur:#{github_state_cur} new:#{github_state_new}"
         if (github_state_new == :pending && github_state_cur != github_state_new)
           # User triggered a new build by clicking Integrate on the Xcode server interface
           puts "Manually triggered on #{br.name}"
@@ -52,7 +51,6 @@ class BotGithub
           create_status_new_build(br)
         elsif (github_state_new != :unknown && github_state_cur != github_state_new)
           # Build has passed or failed so update status and comment on the issue
-          #create_comment_for_bot_status(br, bot)
           puts "Update status on #{br.name}"
           create_status(br, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
         else
@@ -60,7 +58,7 @@ class BotGithub
         end
       end
     end
-
+=begin
     pull_requests.each do |pr|
       # Check if a bot exists for this PR
       bot = bot_statuses[pr.bot_short_name_without_version]
@@ -92,8 +90,8 @@ class BotGithub
         end
       end
     end
-
-    # Delete bots that no longer have open pull requests
+=end
+    # Delete bots that no longer have open pull requests or branches
     bots_unprocessed = bot_statuses.keys - bots_processed
     bots_unprocessed.each do |bot_short_name|
       bot = bot_statuses[bot_short_name]
