@@ -199,7 +199,9 @@ class BotBuilder
     response = http.request(request)
     json = JSON.parse(response.body)
     response_status = json['responses'][0]['responseStatus']
+    response1 = json['responses']
     puts "Result status #{response_status}"
+    puts "Result: #{response1}"
     json
   end
 
