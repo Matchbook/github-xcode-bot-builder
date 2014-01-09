@@ -15,7 +15,10 @@ Then make sure you can manually create and execute a build and run it.
 Create a ~/.bot-sync-github.cfg
 
 Go to your [Github Account Settings](https://github.com/settings/applications) and create a personal access token which
-you will use as your *github_access_token* so that the **bot-sync-github** script can access your github repo
+you will use as your *github_access_token* so that the **bot-sync-github** script can access your github repo.
+
+Go to your [AWS IAM Console](https://console.aws.amazon.com/iam/home?#users), [create a user](http://docs.aws.amazon.com/AWSSdkDocsRuby/latest/DeveloperGuide/ruby-dg-setup.html) with put permission to a S3 bucket and generate an access key for the AWS API which will allow uploading builds for downloading.
+
 
 ```
 github_access_token = 57244a72a7ca33931a40eb4ec21621505ab9f6b3
@@ -25,6 +28,8 @@ xcode_server = 192.168.10.123
 xcode_devices = iphonesimulator iPhone Retina (4-inch) 7.0|iphonesimulator iPhone Retina (4-inch) 6.1
 xcode_scheme = Some-Scheme-Name-app
 xcode_project_or_workspace = SomeProject.xcworkspace # or SomeProject.xcproject
+aws_access_key_id = AWS access key id of S3 bucket for uploading builds
+aws_access_secret_key = AWS access secret key of S3 bucket for uploading builds
 ```
 
 Note that *xcode_devices* need to be pipe delimited. To get the list of available devices run the bot-devices command.

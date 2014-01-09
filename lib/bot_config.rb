@@ -14,7 +14,19 @@ class BotConfig
     @config = ParseConfig.new(@filename)
 
     # Make sure every param is configured properly since param will throw an error for a missing key
-    [:xcode_server, :github_url, :github_repo, :github_access_token, :xcode_devices, :xcode_scheme, :xcode_project_or_workspace].each do |key|
+    [
+      :xcode_server,
+      :github_url,
+      :github_repo,
+      :github_access_token,
+      :xcode_devices,
+      :xcode_scheme,
+      :xcode_project_or_workspace,
+      # These parameters are optional
+      #:aws_access_key_id,
+      #:aws_access_secret_key,
+      #:aws_upload_bucket_dict
+      ].each do |key|
       param key
     end
   end
@@ -45,6 +57,19 @@ class BotConfig
 
   def xcode_project_or_workspace
     param :xcode_project_or_workspace
+  end
+
+  def aws_access_key_id
+    param :aws_access_key_id
+  end
+
+  def aws_access_secret_key
+    param :aws_access_secret_key
+  end
+
+  def aws_upload_bucket(br)
+    # Nil values are allowed to be returned here
+    :aws_upload_bucket_dict[br]
   end
 
   def param(key)

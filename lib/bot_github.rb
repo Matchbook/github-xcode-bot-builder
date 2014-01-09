@@ -50,7 +50,7 @@ class BotGithub
           BotBuilder.instance.start_bot(bot.guid)
           create_status_new_build(br)
         elsif (github_state_new != :unknown && github_state_cur != github_state_new)
-          # Build has passed or failed so update status and comment on the issue
+          # Build has passed or failed
           puts "Update status on #{br.name}"
           create_status(br, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
         else

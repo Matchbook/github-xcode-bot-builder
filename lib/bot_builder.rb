@@ -68,8 +68,6 @@ class BotBuilder
                 notifyCommitterOnFailure: false,
                 type: "com.apple.entity.Bot"
             }
-
-
         ])
     ]
     bot_info = batch_service_request(service_requests)
@@ -200,8 +198,8 @@ class BotBuilder
     request.body = payload.to_json
     response = http.request(request)
     json = JSON.parse(response.body)
-    # response_status = json['responses'][0]['responseStatus']
-    # puts "Result status #{response_status}"
+    response_status = json['responses'][0]['responseStatus']
+    puts "Result status #{response_status}"
     json
   end
 
