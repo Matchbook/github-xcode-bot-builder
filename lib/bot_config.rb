@@ -80,4 +80,5 @@ class BotConfig
     end
     value
   end
+  
 end

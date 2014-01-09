@@ -26,4 +26,5 @@ class BotAWS
     s3.buckets[bucket_name].objects[key].write(:file => file_name)
     puts "Uploading file #{file_name} to bucket #{bucket_name}."
   end
+  
 end
