@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["ModCloth", "Two Bit Labs", "Geoffery Nix", "Todd Huss"]
-  s.date = "2013-12-13"
+  s.date = "2014-01-09"
   s.description = "A command line tool that can be run via cron that configures and manages Xcode server bots for each pull request"
   s.email = ""
   s.executables = ["bot-sync-github", "bot-devices", "bot-status", "bot-delete"]
@@ -31,6 +31,7 @@ Gem::Specification.new do |s|
     "bin/bot-status",
     "bin/bot-sync-github",
     "github-xcode-bot-builder.gemspec",
+    "lib/bot_aws.rb",
     "lib/bot_builder.rb",
     "lib/bot_cli.rb",
     "lib/bot_config.rb",
@@ -50,6 +51,7 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<octokit>, ["~> 2.0"])
       s.add_runtime_dependency(%q<parseconfig>, ["~> 1.0.2"])
+      s.add_runtime_dependency(%q<aws-sdk>, ["~> 1.31.3"])
       s.add_development_dependency(%q<rspec>, ["~> 2.8.0"])
       s.add_development_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_development_dependency(%q<bundler>, ["~> 1.0"])
@@ -57,6 +59,7 @@ Gem::Specification.new do |s|
     else
       s.add_dependency(%q<octokit>, ["~> 2.0"])
       s.add_dependency(%q<parseconfig>, ["~> 1.0.2"])
+      s.add_dependency(%q<aws-sdk>, ["~> 1.31.3"])
       s.add_dependency(%q<rspec>, ["~> 2.8.0"])
       s.add_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_dependency(%q<bundler>, ["~> 1.0"])
@@ -65,6 +68,7 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<octokit>, ["~> 2.0"])
     s.add_dependency(%q<parseconfig>, ["~> 1.0.2"])
+    s.add_dependency(%q<aws-sdk>, ["~> 1.31.3"])
     s.add_dependency(%q<rspec>, ["~> 2.8.0"])
     s.add_dependency(%q<rdoc>, ["~> 3.12"])
     s.add_dependency(%q<bundler>, ["~> 1.0"])

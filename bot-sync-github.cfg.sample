@@ -1,0 +1,13 @@
+github_access_token = <github access token>
+github_url = git@github.com:<user>/<repo>
+github_repo = <user>/<repo>
+xcode_server = localhost (or server hostname/ip)
+xcode_devices = iphonesimulator iPhone Retina (4-inch) 7.0
+xcode_scheme = name of scheme
+xcode_project_or_workspace = <name of project or workspace>
+test_on_pull_request = <true|false> (defaults to true)
+test_on_branch_creation = <true|false> (defaults to false)
+aws_access_key_id = <aws_access_key_id>
+aws_access_secret_key = <aws_access_secret_key>
+aws_upload_bucket_dict = {<branch_name> => <Bucket_name_for_branch>} 
+
