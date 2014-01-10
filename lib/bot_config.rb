@@ -78,7 +78,10 @@ class BotConfig
     :aws_access_secret_key
   end
 
-  def aws_upload_bucket(br)
+  def aws_upload_bucket_dict(br)
+    :aws_upload_bucket_dict.each do |p|
+      puts "b: #{p}"
+    end
     puts "aws_upload_bucket_dict: #{:aws_upload_bucket_dict}"
     :aws_upload_bucket_dict[br]
   end
