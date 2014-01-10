@@ -71,11 +71,11 @@ class BotConfig
 
   # nil values are allowed to be returned below
   def aws_access_key_id
-    @config.aws_access_key_id
+    @config['aws_access_key_id']
   end
 
   def aws_access_secret_key
-    @configaws_access_secret_key
+    @config['aws_access_secret_key']
   end
 
   def aws_upload_bucket(br)
