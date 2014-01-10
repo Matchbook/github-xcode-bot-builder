@@ -58,10 +58,9 @@ class BotGithub
           elsif (github_state_new == :success)
             puts "BR #{br.bot_long_name} passed!"
             upload_bucket = BotConfig.instance.aws_upload_bucket(br.name.sub('BR ', ''))
-            puts "upload_bucket: #{upload_bucket}"
             if (upload_bucket)
-              BotAWS.instance.upload_build(bot, upload_bucket)
               puts "Uploading..."
+              BotAWS.instance.upload_build(bot, upload_bucket)
             end
           else
             puts "BR #{br.bot_long_name} (#{github_state_cur}) is up to date for bot #{bot.long_name}"
