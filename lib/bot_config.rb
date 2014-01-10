@@ -79,7 +79,7 @@ class BotConfig
   end
 
   def aws_upload_bucket(br)
-    @config['aws_upload_bucket_dict'][br]
+    eval(@config['aws_upload_bucket_dict'])[br]
   end
 
   def param(key)
