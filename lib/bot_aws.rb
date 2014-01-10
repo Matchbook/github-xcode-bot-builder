@@ -14,9 +14,6 @@ class BotAWS
       exit 1
     end
 
-    puts "id: #{aws_access_key_id}"
-    puts "secret: #{aws_access_secret_key}"
-
     AWS.config({
       :access_key_id => aws_access_key_id,
       :secret_access_key => aws_access_secret_key,
