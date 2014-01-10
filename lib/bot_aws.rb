@@ -58,7 +58,7 @@ class BotAWS
           builds << build
         end
         html_template = IO.read("#{template_path}/html.template")
-        template = Liquid::Template.parse(plist_template)
+        template = Liquid::Template.parse(html_template)
         html_string = template.render('company_name' => company_name, 'builds' => builds)
         s3_bucket.objects['index.html'].write(html_string)
         puts "Uploaded index.html to bucket #{upload_bucket}."
