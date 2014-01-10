@@ -1,11 +1,11 @@
 <html>
   <head>
-    <title>{% company_name %} Builds</title>
+    <title>{{ company_name }} Builds</title>
   </head>
   <body>
   {% for build in builds %}
     <h1>
-      <a href="itms-services://?action=download-manifest&amp;url={% build.url %}">{% build.title %}</a>
+      <a href="itms-services://?action=download-manifest&amp;url={{ build.url }}">{{ build.title }}</a>
     </h1>
   {% endfor %}
   </body>
