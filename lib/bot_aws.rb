@@ -53,9 +53,11 @@ class BotAWS
 
         builds = []
         s3_bucket.objects.each do |object|
-          url = "https://#{upload_bucket}.s3.amazonaws.com/#{object.key}.plist"
-          build = {'url' => url, 'title' => object.key}
-          builds << build
+          if (object.key.end_with?('plist'))
+            url = "https://#{upload_bucket}.s3.amazonaws.com/#{object.key}"
+            build = {'url' => url, 'title' => object.key.sub('plist', '')}
+            builds << build
+          end
         end
         html_template = IO.read("#{template_path}/html.template")
         template = Liquid::Template.parse(html_template)
