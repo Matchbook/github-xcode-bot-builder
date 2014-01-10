@@ -55,7 +55,7 @@ class BotAWS
         s3_bucket.objects.each do |object|
           if (object.key.end_with?('plist'))
             url = "https://#{upload_bucket}.s3.amazonaws.com/#{object.key}"
-            build = {'url' => url, 'title' => object.key.sub('plist', '')}
+            build = {'url' => url, 'title' => object.key.sub('.plist', '')}
             builds << build
           end
         end
