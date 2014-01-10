@@ -111,6 +111,7 @@ class BotBuilder
       bot.latest_run_status = (bot.latestRunStatus.nil? || bot.latestRunStatus.empty?) ? :unknown : bot.latestRunStatus.to_sym
       bot.latest_run_sub_status = (bot.latestRunSubStatus.nil? || bot.latestRunSubStatus.empty?) ? :unknown : bot.latestRunSubStatus.to_sym
       bot.short_name = bot.tinyID
+      bot.long_name = bot.longName
       bot.short_name_without_version = bot.short_name.sub(/_v\d*$/, '_v')
       statuses[bot.short_name_without_version] = bot
     end
