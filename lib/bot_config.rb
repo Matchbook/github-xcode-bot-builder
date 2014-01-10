@@ -62,28 +62,25 @@ class BotConfig
   end
 
   def test_on_pull_request
-    (:test_on_pull_request ? :test_on_pull_request : true)
+    (!!:test_on_pull_request ? !!:test_on_pull_request : true)
   end
 
   def test_on_branch_creation
-    (:test_on_branch_creation ? :test_on_branch_creation : false)
+    (!!:test_on_branch_creation ? !!:test_on_branch_creation : false)
   end
 
   # nil values are allowed to be returned below
   def aws_access_key_id
-    :aws_access_key_id
+    @config.aws_access_key_id
   end
 
   def aws_access_secret_key
-    :aws_access_secret_key
+    @configaws_access_secret_key
   end
 
   def aws_upload_bucket(br)
-    :aws_upload_bucket_dict.each do |p|
-      puts "b: #{p}"
-    end
-    puts "aws_upload_bucket_dict: #{:aws_upload_bucket_dict}"
-    :aws_upload_bucket_dict[br]
+    puts "aws_upload_bucket_dict: #{@config.aws_upload_bucket_dict}"
+    @config.aws_upload_bucket_dict[br]
   end
 
   def param(key)
