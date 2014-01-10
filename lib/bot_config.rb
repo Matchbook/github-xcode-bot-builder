@@ -79,6 +79,7 @@ class BotConfig
   end
 
   def aws_upload_bucket(br)
+    puts "aws_upload_bucket_dict: #{:aws_upload_bucket_dict}"
     :aws_upload_bucket_dict[br]
   end
 
