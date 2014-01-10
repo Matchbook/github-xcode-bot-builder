@@ -25,8 +25,8 @@ class BotAWS
     file_name = "/Library/Server/Xcode/Data/BotRuns/BotRun-#{bot.latestSuccessfulBotRunGUID}.bundle/output/#{bot.long_name}.ipa"
     if (File.exist?(file_name))
       key = File.basename(file_name)
-      @s3.buckets[upload_bucket].objects[key].write(:file => file_name)
-      puts "Uploading file #{file_name} to bucket #{upload_bucket}."
+      @s3.buckets[upload_bucket].objects[key.sub(' ', '')].write(:file => file_name)
+      puts "Uploaded file #{file_name} to bucket #{upload_bucket}."
     else
       puts "File not uploaded. #{file_name} does not exist."
     end
