@@ -24,7 +24,7 @@ class BotAWS
   def upload_build(bot, upload_bucket)
     file_name = "/Library/Server/Xcode/Data/BotRuns/BotRun-#{bot.latestSuccessfulBotRunGUID}.bundle/output/#{bot.long_name}.ipa"
     key = File.basename(file_name)
-    s3.buckets[upload_bucket].objects[key].write(:file => file_name)
+    @s3.buckets[upload_bucket].objects[key].write(:file => file_name)
     puts "Uploading file #{file_name} to bucket #{upload_bucket}."
   end
 
