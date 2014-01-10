@@ -44,26 +44,27 @@ class BotGithub
           github_state_new = convert_bot_status_to_github_state(bot)
           if (github_state_new == :pending && github_state_cur != github_state_new)
             # User triggered a new build by clicking Integrate on the Xcode server interface
-            puts "Manually triggered on #{br.name}"
+            puts "#{br.bot_long_name} manually triggered."
             create_status(br, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
           elsif (github_state_cur == :unknown || user_requested_retest(br, bot))
             # Unknown state occurs when there's a new commit so trigger a new build
-            puts "New commit on #{br.name}"
+            puts "#{br.bot_long_name} has a new commit."
             BotBuilder.instance.start_bot(bot.guid)
             create_status_new_build(br)
           elsif (github_state_new != :unknown && github_state_cur != github_state_new)
             # Build has passed or failed
-            puts "Update status on #{br.name}"
+            puts "#{br.bot_long_name} status updated."
             create_status(br, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
           elsif (github_state_new == :success)
-            puts "BR #{br.bot_long_name} passed!"
-            upload_bucket = BotConfig.instance.aws_upload_bucket(br.name.sub('BR ', ''))
+            puts "#{br.bot_long_name} passed!"
+            branch_name = br.name.sub('BR ', '') # branch name is bot name minus leading BR<space>
+            upload_bucket = BotConfig.instance.aws_upload_bucket(branch_name)
             if (upload_bucket)
               puts "Uploading..."
               BotAWS.instance.upload_build(bot, upload_bucket)
             end
           else
-            puts "BR #{br.bot_long_name} (#{github_state_cur}) is up to date for bot #{bot.long_name}"
+            puts "#{br.bot_long_name} (#{github_state_cur}) is up to date."
           end
         end
       end

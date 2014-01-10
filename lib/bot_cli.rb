@@ -25,7 +25,7 @@ def delete(args)
   end
 
   def status(args)
-    BotBuilder.instance.status args[0]
+    BotBuilder.instance.status(args[0])
   end
 
   def devices(args)

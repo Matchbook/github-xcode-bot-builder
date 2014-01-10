@@ -5,13 +5,13 @@ class BotConfig
   include Singleton
 
   def initialize
-    @filename = File.expand_path('~/.bot-sync-github.cfg')
-    if (!File.exists? @filename)
+    filename = File.expand_path('~/.bot-sync-github.cfg')
+    if (!File.exists?(filename))
       $stderr.puts "Missing configuration file #{@filename}"
       exit 1
     end
 
-    @config = ParseConfig.new(@filename)
+    @config = ParseConfig.new(filename)
 
     # Make sure every param is configured properly since param will throw an error for a missing key
     [
