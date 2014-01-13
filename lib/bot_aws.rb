@@ -51,8 +51,7 @@ class BotAWS
     end
 
     # Upload ipa
-    object = s3_bucket.objects["#{key_prefix}.ipa"].write(:file => file_name)
-    object.acl = :public_read
+    s3_bucket.objects["#{key_prefix}.ipa"].write(:file => file_name).acl = :public_read
     puts "Uploaded \"#{file_name}\" to bucket #{upload_bucket}."
 
     template_path = File.dirname(__FILE__) + "/../templates"
@@ -67,8 +66,7 @@ class BotAWS
       'version_string' => version_string,
       'title' => title
       )
-    object = s3_bucket.objects["#{key_prefix}.plist"].write(plist_string)
-    object.acl = :public_read
+    s3_bucket.objects["#{key_prefix}.plist"].write(plist_string).acl = :public_read
     puts "Uploaded plist for \"#{key_prefix}\" to bucket #{upload_bucket}."
 
     # Upload index.html
@@ -90,8 +88,7 @@ class BotAWS
     html_string = template.render('company_name' => company_name, 'builds' => builds)
     html_name = BotConfig.instance.aws_upload_html_name(branch_name)
     html_file_name = (html_name ? html_name : 'index')
-    object = s3_bucket.objects["#{html_file_name}.html"].write(html_string)
-    object.acl = :public_read
+    s3_bucket.objects["#{html_file_name}.html"].write(html_string).acl = :public_read
     puts "Uploaded index.html to bucket #{upload_bucket}."
   end
 end
