@@ -12,7 +12,10 @@ class BotConfig
     end
 
     @config = ParseConfig.new(filename)
-    @aws_upload_dict = eval(@config['aws_upload_dict'])
+
+    if (@config['aws_upload_dict'])
+      @aws_upload_dict = eval(@config['aws_upload_dict'])
+    end
 
     # Make sure every param is configured properly since param will throw an error for a missing key
     [
@@ -81,7 +84,7 @@ class BotConfig
   end
 
   def aws_upload_bucket(br)
-    @aws_upload_dict[br]['branch']
+    @aws_upload_dict[br]['bucket']
   end
 
   def aws_upload_name(br)
