@@ -100,8 +100,7 @@ class BotConfig
   end
 
   def aws_upload_list_versions(br)
-    list_versions = @aws_upload_dict[br]['list_versions']
-    (list_versions ? true : false)
+    (!!@aws_upload_dict[br]['list_versions'] ? true : false)
   end
 
   def company_name
