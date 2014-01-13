@@ -60,7 +60,7 @@ class BotBuilder
                     buildFromClean: true,
                     integratePerformsAnalyze: true,
                     integratePerformsTest: true,
-                    integratePerformsArchive: false,
+                    integratePerformsArchive: true,
                     deviceSpecification: "specificDevices",
                     deviceInfo: device_guids
                 },
