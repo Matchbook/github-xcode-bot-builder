@@ -34,14 +34,14 @@ class BotAWS
       key_prefix = title
     end
 
-    if (s3_bucket.objects["#{key_prefix}.plist"].exists?)
-      return # Build already uploaded
-    end
-    
     s3_bucket = @s3.buckets[upload_bucket]
     if ( ! s3_bucket.exists?)
       puts "S3 bucket \"#{upload_bucket}\" does not exist."
       return
+    end
+
+    if (s3_bucket.objects["#{key_prefix}.plist"].exists?)
+      return # Build already uploaded
     end
 
     file_name = "/Library/Server/Xcode/Data/BotRuns/BotRun-#{bot.latestSuccessfulBotRunGUID}.bundle/output/#{bot.long_name}.ipa"
