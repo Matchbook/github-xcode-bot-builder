@@ -60,7 +60,6 @@ class BotGithub
             branch_name = br.name.sub('BR ', '') # branch name is bot name minus leading BR<space>
             upload_bucket = BotConfig.instance.aws_upload_bucket(branch_name)
             if (upload_bucket)
-              puts "Uploading..."
               BotAWS.instance.upload_build(bot, upload_bucket, branch_name)
             end
           else

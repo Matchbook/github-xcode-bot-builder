@@ -22,18 +22,6 @@ class BotAWS
   end
 
   def upload_build(bot, upload_bucket, branch_name)
-    s3_bucket = @s3.buckets[upload_bucket]
-    if ( ! s3_bucket.exists?)
-      puts "S3 bucket \"#{upload_bucket}\" does not exist."
-      return
-    end
-
-    file_name = "/Library/Server/Xcode/Data/BotRuns/BotRun-#{bot.latestSuccessfulBotRunGUID}.bundle/output/#{bot.long_name}.ipa"
-    if ( ! File.exists?(file_name))
-      puts "File not uploaded. \"#{file_name}\" does not exist."
-      return
-    end
-
     company_name = BotConfig.instance.company_name
     title = BotConfig.instance.aws_upload_name(branch_name)
     version_string = "2.2.0" #TODO figure out where to get this info
@@ -49,6 +37,20 @@ class BotAWS
     if (s3_bucket.objects["#{key_prefix}.plist"].exists?)
       return # Build already uploaded
     end
+    
+    s3_bucket = @s3.buckets[upload_bucket]
+    if ( ! s3_bucket.exists?)
+      puts "S3 bucket \"#{upload_bucket}\" does not exist."
+      return
+    end
+
+    file_name = "/Library/Server/Xcode/Data/BotRuns/BotRun-#{bot.latestSuccessfulBotRunGUID}.bundle/output/#{bot.long_name}.ipa"
+    if ( ! File.exists?(file_name))
+      puts "File not uploaded. \"#{file_name}\" does not exist."
+      return
+    end
+
+    puts "Uploading..."
 
     # Upload ipa
     s3_bucket.objects["#{key_prefix}.ipa"].write(:file => file_name, :acl => :public_read)
