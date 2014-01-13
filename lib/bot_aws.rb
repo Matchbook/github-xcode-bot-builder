@@ -23,7 +23,8 @@ class BotAWS
 
   def upload_build(bot, upload_bucket, branch_name)
     company_name = BotConfig.instance.company_name
-    title = BotConfig.instance.aws_upload_name(branch_name)
+    upload_name = BotConfig.instance.aws_upload_name(branch_name)
+    title = (upload_name ? upload_name : branch_name)
     version_string = "2.2.0" #TODO figure out where to get this info
     bundle_identifier = BotConfig.instance.aws_upload_bundle_identifier(branch_name)
     list_versions = BotConfig.instance.aws_upload_list_versions(branch_name)
