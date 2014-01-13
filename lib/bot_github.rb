@@ -61,7 +61,7 @@ class BotGithub
             upload_bucket = BotConfig.instance.aws_upload_bucket(branch_name)
             if (upload_bucket)
               puts "Uploading..."
-              BotAWS.instance.upload_build(bot, upload_bucket)
+              BotAWS.instance.upload_build(bot, upload_bucket, branch_name)
             end
           else
             puts "#{br.bot_long_name} (#{github_state_cur}) is up to date."

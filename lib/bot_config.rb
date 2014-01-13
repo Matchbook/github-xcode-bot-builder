@@ -12,6 +12,7 @@ class BotConfig
     end
 
     @config = ParseConfig.new(filename)
+    @aws_upload_dict = eval(@config['aws_upload_dict'])
 
     # Make sure every param is configured properly since param will throw an error for a missing key
     [
@@ -27,7 +28,8 @@ class BotConfig
       #:test_on_branch_creation,
       #:aws_access_key_id,
       #:aws_access_secret_key,
-      #:aws_upload_bucket_dict
+      #:aws_upload_dict
+      #:company_name
       ].each do |key|
       param key
     end
@@ -79,7 +81,27 @@ class BotConfig
   end
 
   def aws_upload_bucket(br)
-    eval(@config['aws_upload_bucket_dict'])[br]
+    @aws_upload_dict[br]['branch']
+  end
+
+  def aws_upload_name(br)
+    @aws_upload_dict[br]['name']
+  end
+
+  def aws_upload_bundle_identifier(br)
+    @aws_upload_dict[br]['bundle_identifier']
+  end
+
+  def aws_upload_html_name(br)
+    @aws_upload_dict[br]['html_name']
+  end
+
+  def aws_upload_list_versions(br)
+    @aws_upload_dict[br]['list_versions']
+  end
+
+  def company_name
+    @config['company_name']
   end
 
   def param(key)

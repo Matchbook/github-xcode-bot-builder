@@ -7,7 +7,7 @@ xcode_scheme = name of scheme
 xcode_project_or_workspace = <name of project or workspace>
 test_on_pull_request = <true|false> (defaults to true)
 test_on_branch_creation = <true|false> (defaults to false)
-aws_access_key_id = <aws_access_key_id>
-aws_access_secret_key = <aws_access_secret_key>
-aws_upload_bucket_dict = {<branch_name> => <Bucket_name_for_branch>} 
-
+aws_access_key_id = <aws access key id>
+aws_access_secret_key = <aws access secret key>
+aws_upload_dict = {<branch name> => {'bucket' => <aws bucket name for branch>, 'name' => <display name of app>, 'bundle_identifier' => <bundle identifier of app>, 'html_name' => <name of html file>, 'list_versions' => <true | false>}}
+company_name = <name of company>
