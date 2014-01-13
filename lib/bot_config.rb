@@ -84,27 +84,37 @@ class BotConfig
   end
 
   def aws_upload_bucket(br)
-    @aws_upload_dict[br]['bucket']
+    aws_upload_dict_value(br, 'bucket')
   end
 
   def aws_upload_name(br)
-    @aws_upload_dict[br]['name']
+    aws_upload_dict_value(br, 'name')
   end
 
   def aws_upload_bundle_identifier(br)
-    @aws_upload_dict[br]['bundle_identifier']
+    aws_upload_dict_value(br, 'bundle_identifier')
   end
 
   def aws_upload_html_name(br)
-    @aws_upload_dict[br]['html_name']
+    aws_upload_dict_value(br, 'html_name')
   end
 
   def aws_upload_list_versions(br)
-    (!!@aws_upload_dict[br]['list_versions'] ? true : false)
+    (!!aws_upload_dict_value(br, 'list_versions') ? true : false)
   end
 
   def company_name
     @config['company_name']
+  end
+
+private
+
+  def aws_upload_dict_value(br, key)
+    if (@aws_upload_dict.key?(br))
+      @aws_upload_dict[br]['bucket']
+    else
+      nil
+    end
   end
 
   def param(key)
