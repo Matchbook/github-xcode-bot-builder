@@ -48,12 +48,12 @@ class BotGithub
             create_status(br, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
           elsif (github_state_cur == :unknown || user_requested_retest(br, bot))
             # Unknown state occurs when there's a new commit so trigger a new build
-            puts "#{br.bot_long_name} has a new commit."
+            puts "#{br.bot_long_name} has a new commit - triggering CI."
             BotBuilder.instance.start_bot(bot.guid)
             create_status_new_build(br)
           elsif (github_state_new != :unknown && github_state_cur != github_state_new)
             # Build has passed or failed
-            puts "#{br.bot_long_name} status updated."
+            puts "#{br.bot_long_name} status updated from #{github_state_cur} to #{github_state_new}."
             create_status(br, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
           elsif (github_state_new == :success)
             puts "#{br.bot_long_name} passed!"
