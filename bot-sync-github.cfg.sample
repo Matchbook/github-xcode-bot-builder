@@ -19,10 +19,10 @@
       "bundle_identifier" : <bundle identifier of app>,
       "aws_access_key_id" : <aws access key id>,
       "aws_access_secret_key" : <aws access secret key>,
-      "upload_bucket" : <aws bucket name for branch>,
-      "upload_name" : <display name of app>,
-      "upload_html_name" : <name of html file>,
-      "upload_list_all_versions" : <true | false>
+      "aws_upload_bucket" : <aws bucket name for branch>,
+      "aws_upload_name" : <display name of app>,
+      "aws_upload_html_name" : <name of html file>,
+      "aws_upload_list_all_versions" : <true | false>
     }
   }
 }
