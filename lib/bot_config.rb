@@ -38,19 +38,19 @@ class BotConfig
     @config[:server][:company_name]
   end
 
-  def aws_access_key_id(br)
+  def aws_access_key_id
     @config[:server][:aws_access_key_id]
   end
 
-  def aws_access_secret_key(br)
+  def aws_access_secret_key
     @config[:server][:aws_access_secret_key]
   end
 
-  def test_on_pull_request(br)
+  def test_on_pull_request
     (!!@config[:server][:test_on_pull_request] ? true : false)
   end
 
-  def test_on_branch_creation(br)
+  def test_on_branch_creation
     (!!@config[:server][:test_on_branch_creation] ? true : false)
   end
 
