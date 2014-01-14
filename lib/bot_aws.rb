@@ -26,8 +26,8 @@ class BotAWS
     upload_name = BotConfig.instance.aws_upload_name(branch_name)
     title = (upload_name ? upload_name : branch_name)
     version_string = "2.2.0" #TODO figure out where to get this info
-    bundle_identifier = BotConfig.instance.aws_upload_bundle_identifier(branch_name)
-    list_versions = BotConfig.instance.aws_upload_list_versions(branch_name)
+    bundle_identifier = BotConfig.instance.bundle_identifier(branch_name)
+    list_versions = BotConfig.instance.aws_upload_list_all_versions(branch_name)
 
     if (list_versions)
       key_prefix = "#{title}-#{version_string}"

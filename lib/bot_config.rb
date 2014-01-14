@@ -34,8 +34,16 @@ class BotConfig
     @config[:server][:xcode_project_or_workspace]
   end
 
-  def company_name(br)
+  def company_name
     @config[:server][:company_name]
+  end
+
+  def aws_access_key_id(br)
+    @config[:server][:aws_access_key_id]
+  end
+
+  def aws_access_secret_key(br)
+    @config[:server][:aws_access_secret_key]
   end
 
   def test_on_pull_request(br)
@@ -52,14 +60,6 @@ class BotConfig
 
   def xcode_scheme(br)
     branch_parameter(br, :xcode_scheme)
-  end
-
-  def aws_access_key_id(br)
-    branch_parameter(br, :aws_access_key_id)
-  end
-
-  def aws_access_secret_key(br)
-    branch_parameter(br, :aws_access_secret_key)
   end
 
   def aws_upload_bucket(br)
@@ -85,7 +85,7 @@ class BotConfig
 private
 
   def branch_parameter(br, key)
-    if (@config[:branches](br.intern)
+    if (@config[:branches](br.intern))
       @config[:branches][br.intern][key]
     else
       nil
