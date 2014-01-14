@@ -98,7 +98,8 @@ class BotBuilder
               'latestRunStatus',
               'latestRunSubStatus',
               'longName',
-              'latestSuccessfulBotRunGUID'],
+              'latestSuccessfulBotRunGUID',
+              'latestRunSCMCommits'],
             entityTypes: ["com.apple.entity.Bot"]
         }
     ], 'SearchService') ]
@@ -112,6 +113,7 @@ class BotBuilder
       bot.latest_run_sub_status = (bot.latestRunSubStatus.nil? || bot.latestRunSubStatus.empty?) ? :unknown : bot.latestRunSubStatus.to_sym
       bot.short_name = bot.tinyID
       bot.long_name = bot.longName
+      bot.commits = latestRunSCMCommits
       bot.short_name_without_version = bot.short_name.sub(/_v\d*$/, '_v')
       statuses[bot.short_name_without_version] = bot
     end

@@ -1,6 +1,5 @@
 {
   "server" : {
-      "name" : <human readable name of repo>,
       "github_access_token" : <github access token>,
       "github_url" : git@github.com:<user>/<repo>,
       "github_repo" : <user>/<repo>,
@@ -18,12 +17,11 @@
         "iphonesimulator iPhone Retina (4-inch) 7.0"
       ],
       "xcode_scheme" : <name of scheme>,
-      "bundle_identifier" : <bundle identifier of app>,
       "pass_on_warnings" : <true|false> (defaults to false),
       "pass_on_analyzer_issues" : <true|false> (defaults to false),
       "aws_upload_bucket" : <aws bucket name for branch>,
       "aws_upload_display_name" : <display name of app displayed to user>,
-      "aws_upload_file_name" : <name of files uploaded (if blank, index.html will be used)>,
+      "aws_upload_html_file_name" : <name of html file uploaded (if blank, index.html will be used)>,
       "aws_upload_list_all_versions" : <true | false> (defaults to false)
     }
   }

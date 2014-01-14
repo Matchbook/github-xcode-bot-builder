@@ -78,12 +78,8 @@ class BotConfig
     branch_parameter(br, :aws_upload_display_name)
   end
 
-  def bundle_identifier(br)
-    branch_parameter(br, :bundle_identifier)
-  end
-
-  def aws_upload_file_name(br)
-    branch_parameter(br, :aws_upload_file_name)
+  def aws_upload_html_file_name(br)
+    branch_parameter(br, :aws_upload_html_file_name)
   end
 
   def aws_upload_list_all_versions(br)
