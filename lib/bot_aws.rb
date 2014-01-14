@@ -59,7 +59,7 @@ class BotAWS
 
     # Upload ipa
     s3_bucket.objects["#{file_name}.ipa"].write(:file => ipa_file_name, :acl => :public_read)
-    puts "Uploaded \"#{file_name}\" to bucket #{upload_bucket}."
+    puts "Uploaded ipa for \"#{file_name}\" to bucket #{upload_bucket}."
 
     # Upload plist
     plist_template = IO.read("#{template_path}/plist.template")
