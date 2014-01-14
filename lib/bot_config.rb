@@ -11,96 +11,84 @@ class BotConfig
       exit 1
     end
 
-    @config = JSON.parse(IO.read(filename))
+    @config = JSON.parse(IO.read(filename), :symbolize_names => true)
   end
 
   def xcode_server_hostname
-    param :xcode_server
+    @config[:server][:xcode_server_hostname]
   end
 
   def github_access_token
-    param :github_access_token
+    @config[:server][:github_access_token]
   end
 
-  def scm_path
-    param :github_url
+  def github_url
+    @config[:server][:github_url]
   end
 
   def github_repo
-    param :github_repo
-  end
-
-  def xcode_devices
-    param(:xcode_devices).split('|')
-  end
-
-  def xcode_scheme
-    param :xcode_scheme
+    @config[:server][:github_repo]
   end
 
   def xcode_project_or_workspace
-    param :xcode_project_or_workspace
+    @config[:server][:xcode_project_or_workspace]
   end
 
-  def test_on_pull_request
-    (!!:test_on_pull_request ? !!:test_on_pull_request : true)
+  def company_name(br)
+    @config[:server][:company_name]
   end
 
-  def test_on_branch_creation
-    (!!:test_on_branch_creation ? !!:test_on_branch_creation : false)
+  def test_on_pull_request(br)
+    (!!@config[:server][:test_on_pull_request] ? true : false)
   end
 
-  # nil values are allowed to be returned below
-  def aws_access_key_id
-    @config['aws_access_key_id']
+  def test_on_branch_creation(br)
+    (!!@config[:server][:test_on_branch_creation] ? true : false)
   end
 
-  def aws_access_secret_key
-    @config['aws_access_secret_key']
+  def xcode_devices(br)
+    branch_parameter(br, :xcode_devices)
+  end
+
+  def xcode_scheme(br)
+    branch_parameter(br, :xcode_scheme)
+  end
+
+  def aws_access_key_id(br)
+    branch_parameter(br, :aws_access_key_id)
+  end
+
+  def aws_access_secret_key(br)
+    branch_parameter(br, :aws_access_secret_key)
   end
 
   def aws_upload_bucket(br)
-    aws_upload_dict_value(br, 'bucket')
+    branch_parameter(br, :aws_upload_bucket)
   end
 
   def aws_upload_name(br)
-    aws_upload_dict_value(br, 'name')
+    branch_parameter(br, :aws_upload_name)
   end
 
-  def aws_upload_bundle_identifier(br)
-    aws_upload_dict_value(br, 'bundle_identifier')
+  def bundle_identifier(br)
+    branch_parameter(br, :bundle_identifier)
   end
 
   def aws_upload_html_name(br)
-    aws_upload_dict_value(br, 'html_name')
+    branch_parameter(br, :aws_upload_html_name)
   end
 
-  def aws_upload_list_versions(br)
-    (!!aws_upload_dict_value(br, 'list_versions') ? true : false)
+  def aws_upload_list_all_versions(br)
+    (!!branch_parameter(br, :aws_upload_list_all_versions) ? true : false)
   end
 
-  def company_name
-    @config['company_name']
-  end
-
-=begin
 private
 
-  def aws_upload_dict_value(br, key)
-    if (@aws_upload_dict.key?(br))
-      @aws_upload_dict[br][key]
+  def branch_parameter(br, key)
+    if (@config[:branches](br.intern)
+      @config[:branches][br.intern][key]
     else
       nil
     end
   end
-
-  def param(key)
-    value = @config[key.to_s]
-    if (value.nil?)
-      $stderr.puts "Missing configuration key #{key} in #{@filename}"
-      exit 1
-    end
-    value
-  end
-=end
 end
