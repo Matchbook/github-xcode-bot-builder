@@ -82,7 +82,7 @@ class BotAWS
           builds << build
         end
       end
-    else # Only list plist that was just uploaded
+    else # Only list the plist that was just uploaded
       build = {'url' => ipa_url, 'title' => title}
       builds << build
     end

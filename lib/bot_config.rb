@@ -1,5 +1,5 @@
 require 'singleton'
-require 'parseconfig'
+require 'json'
 
 class BotConfig
   include Singleton
@@ -11,31 +11,7 @@ class BotConfig
       exit 1
     end
 
-    @config = ParseConfig.new(filename)
-
-    if (@config['aws_upload_dict'])
-      @aws_upload_dict = eval(@config['aws_upload_dict'])
-    end
-
-    # Make sure every param is configured properly since param will throw an error for a missing key
-    [
-      :xcode_server,
-      :github_url,
-      :github_repo,
-      :github_access_token,
-      :xcode_devices,
-      :xcode_scheme,
-      :xcode_project_or_workspace,
-      # These parameters are optional
-      #:test_on_pull_request,
-      #:test_on_branch_creation,
-      #:aws_access_key_id,
-      #:aws_access_secret_key,
-      #:aws_upload_dict
-      #:company_name
-      ].each do |key|
-      param key
-    end
+    @config = JSON.parse(IO.read(filename))
   end
 
   def xcode_server_hostname
@@ -107,11 +83,12 @@ class BotConfig
     @config['company_name']
   end
 
+=begin
 private
 
   def aws_upload_dict_value(br, key)
     if (@aws_upload_dict.key?(br))
-      @aws_upload_dict[br]['bucket']
+      @aws_upload_dict[br][key]
     else
       nil
     end
@@ -125,5 +102,5 @@ private
     end
     value
   end
-
+=end
 end

@@ -1,7 +1,6 @@
 source "http://rubygems.org"
 
 gem "octokit", "~> 2.0"
-gem "parseconfig", "~> 1.0.2"
 gem "aws-sdk", "~> 1.31.3"
 gem "liquid", "~> 2.6.1"
 
