@@ -3,7 +3,7 @@ require 'aws-sdk'
 require 'bot_config'
 require 'liquid'
 require 'git'
-require 'rubyzip'
+require 'zip'
 
 class BotAWS
   include Singleton
