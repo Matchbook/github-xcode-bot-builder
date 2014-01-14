@@ -85,7 +85,7 @@ class BotConfig
 private
 
   def branch_parameter(br, key)
-    if (@config[:branches](br.intern))
+    if (@config[:branches](br.intern).exists?)
       @config[:branches][br.intern][key]
     else
       nil
