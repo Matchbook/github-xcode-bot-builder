@@ -41,7 +41,11 @@ class BotGithub
           create_status_new_build(br)
         else
           github_state_cur = latest_github_state(br).state # :unknown :pending :success :error :failure
-          github_state_new = convert_bot_status_to_github_state(bot)
+          github_state_new = convert_bot_status_to_github_state(bot,
+            pass_on_warnings = BotConfig.pass_on_warnings(br.name),
+            pass_on_analyzer_issues = BotConfig.pass_on_analyzer_issues(br.name)
+            )
+
           if (github_state_new == :pending && github_state_cur != github_state_new)
             # User triggered a new build by clicking Integrate on the Xcode server interface
             puts "#{br.bot_long_name} manually triggered."
@@ -125,7 +129,7 @@ class BotGithub
     github_description
   end
 
-  def convert_bot_status_to_github_state(bot)
+  def convert_bot_status_to_github_state(bot, pass_on_warnings = false, pass_on_analyzer_issues = false)
     bot_run_status = bot.latest_run_status # :unknown :running :completed
     bot_run_sub_status = bot.latest_run_sub_status # :unknown :build-failed :build-errors :test-failures :warnings :analysis-issues :succeeded
     github_state = bot_run_status == :running ? :pending : :unknown
@@ -134,9 +138,9 @@ class BotGithub
                       when :"test-failures"
                         :failure
                       when :"warnings"
-                        (BotConfig.pass_on_warnings ? :success : :failure)
+                        (pass_on_warnings ? :success : :failure)
                       when :"analysis-issues"
-                        (BotConfig.pass_on_analyzer_issues ? :success : :failure)
+                        (pass_on_analyzer_issues ? :success : :failure)
                       when :"succeeded"
                         :success
                       else
