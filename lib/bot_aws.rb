@@ -41,21 +41,22 @@ class BotAWS
       return
     end
 
-    if (s3_bucket.objects["#{key_prefix}.plist"].exists?)
+    custom_file_name = BotConfig.instance.aws_upload_file_name(branch_name)
+    file_name = (custom_file_name ? custom_file_name : key_prefix)
+
+    if (s3_bucket.objects["#{file_name}.plist"].exists?)
       return # Build already uploaded
     end
 
     ipa_file_name = "/Library/Server/Xcode/Data/BotRuns/BotRun-#{bot.latestSuccessfulBotRunGUID}.bundle/output/#{bot.long_name}.ipa"
     if ( ! File.exists?(ipa_file_name))
-      puts "File not uploaded. \"#{file_name}\" does not exist."
+      puts "File not uploaded. \"#{ipa_file_name}\" does not exist."
       return
     end
 
     puts "Uploading..."
 
     template_path = File.dirname(__FILE__) + "/../templates"
-    custom_file_name = BotConfig.instance.aws_upload_file_name(branch_name)
-    file_name = (file_name ? file_name : key_prefix)
 
     # Upload ipa
     s3_bucket.objects["#{file_name}.ipa"].write(:file => ipa_file_name, :acl => :public_read)
@@ -92,7 +93,7 @@ class BotAWS
     template = Liquid::Template.parse(html_template)
     html_string = template.render('company_name' => company_name, 'builds' => builds)
     html_name = BotConfig.instance.aws_upload_file_name(branch_name)
-    html_file_name = (html_name ? html_name : 'index')
+    html_file_name = (html_name ? html_name : "index")
     s3_bucket.objects["#{html_file_name}.html"].write(html_string, :acl => :public_read)
     puts "Uploaded #{html_file_name}.html to bucket #{upload_bucket}."
   end
