@@ -45,8 +45,8 @@ class BotAWS
       return # Build already uploaded
     end
 
-    file_name = "/Library/Server/Xcode/Data/BotRuns/BotRun-#{bot.latestSuccessfulBotRunGUID}.bundle/output/#{bot.long_name}.ipa"
-    if ( ! File.exists?(file_name))
+    ipa_file_name = "/Library/Server/Xcode/Data/BotRuns/BotRun-#{bot.latestSuccessfulBotRunGUID}.bundle/output/#{bot.long_name}.ipa"
+    if ( ! File.exists?(ipa_file_name))
       puts "File not uploaded. \"#{file_name}\" does not exist."
       return
     end
@@ -58,7 +58,7 @@ class BotAWS
     file_name = (file_name ? file_name : key_prefix)
 
     # Upload ipa
-    s3_bucket.objects["#{file_name}.ipa"].write(:file => file_name, :acl => :public_read)
+    s3_bucket.objects["#{file_name}.ipa"].write(:file => ipa_file_name, :acl => :public_read)
     puts "Uploaded \"#{file_name}\" to bucket #{upload_bucket}."
 
     # Upload plist
@@ -94,6 +94,6 @@ class BotAWS
     html_name = BotConfig.instance.aws_upload_file_name(branch_name)
     html_file_name = (html_name ? html_name : 'index')
     s3_bucket.objects["#{html_file_name}.html"].write(html_string, :acl => :public_read)
-    puts "Uploaded index.html to bucket #{upload_bucket}."
+    puts "Uploaded #{html_file_name}.html to bucket #{upload_bucket}."
   end
 end
