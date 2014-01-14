@@ -54,7 +54,7 @@ class BotAWS
     puts "Uploading..."
 
     template_path = File.dirname(__FILE__) + "/../templates"
-    custom_file_name = BotConfig.instance.aws_upload_file_name
+    custom_file_name = BotConfig.instance.aws_upload_file_name(branch_name)
     file_name = (file_name ? file_name : key_prefix)
 
     # Upload ipa
