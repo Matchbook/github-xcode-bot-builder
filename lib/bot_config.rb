@@ -66,7 +66,7 @@ class BotConfig
     branch_parameter(br, :pass_on_warnings)
   end
 
-  def pass_on_analyzer_issues
+  def pass_on_analyzer_issues(br)
     branch_parameter(br, :pass_on_analyzer_issues)
   end
 
