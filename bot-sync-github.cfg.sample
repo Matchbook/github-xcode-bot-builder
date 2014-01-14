@@ -9,7 +9,7 @@
       "xcode_server_hostname" : localhost (or server hostname/ip),
       "company_name" = <name of company>,
       "xcode_project_or_workspace" : <name of project or workspace>,
-      "test_on_pull_request" : <true|false> (defaults to true),
+      "test_on_pull_request" : <true|false> (defaults to false),
       "test_on_branch_creation" : <true|false> (defaults to false)
   },
   "branches" : {
@@ -19,10 +19,12 @@
       ],
       "xcode_scheme" : <name of scheme>,
       "bundle_identifier" : <bundle identifier of app>,
+      "pass_on_warnings" : <true|false> (defaults to false),
+      "pass_on_analyzer_issues" : <true|false> (defaults to false),
       "aws_upload_bucket" : <aws bucket name for branch>,
       "aws_upload_display_name" : <display name of app displayed to user>,
       "aws_upload_file_name" : <name of files uploaded (if blank, index.html will be used)>,
-      "aws_upload_list_all_versions" : <true | false>
+      "aws_upload_list_all_versions" : <true | false> (defaults to false)
     }
   }
 }

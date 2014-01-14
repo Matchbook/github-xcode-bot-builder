@@ -62,6 +62,14 @@ class BotConfig
     branch_parameter(br, :xcode_scheme)
   end
 
+  def pass_on_warnings(br)
+    branch_parameter(br, :pass_on_warnings)
+  end
+
+  def pass_on_analyzer_issues
+    branch_parameter(br, :pass_on_analyzer_issues)
+  end
+
   def aws_upload_bucket(br)
     branch_parameter(br, :aws_upload_bucket)
   end

@@ -131,12 +131,16 @@ class BotGithub
     github_state = bot_run_status == :running ? :pending : :unknown
     if (bot_run_status == :completed || bot_run_status == :failed)
       github_state = case bot_run_sub_status
-                       when :"test-failures", :"warnings", :"analysis-issues"
-                         :failure
-                       when :"succeeded"
-                         :success
-                       else
-                         :error
+                      when :"test-failures"
+                        :failure
+                      when :"warnings"
+                        (BotConfig.pass_on_warnings ? :success : :failure)
+                      when :"analysis-issues"
+                        (BotConfig.pass_on_analyzer_issues ? :success : :failure)
+                      when :"succeeded"
+                        :success
+                      else
+                        :error
                      end
     end
     github_state
