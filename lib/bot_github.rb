@@ -42,8 +42,8 @@ class BotGithub
         else
           github_state_cur = latest_github_state(br).state # :unknown :pending :success :error :failure
           github_state_new = convert_bot_status_to_github_state(bot,
-            pass_on_warnings = BotConfig.pass_on_warnings(br.name),
-            pass_on_analyzer_issues = BotConfig.pass_on_analyzer_issues(br.name)
+            pass_on_warnings = BotConfig.instance.pass_on_warnings(br.name),
+            pass_on_analyzer_issues = BotConfig.instance.pass_on_analyzer_issues(br.name)
             )
 
           if (github_state_new == :pending && github_state_cur != github_state_new)
