@@ -20,8 +20,8 @@
       "xcode_scheme" : <name of scheme>,
       "bundle_identifier" : <bundle identifier of app>,
       "aws_upload_bucket" : <aws bucket name for branch>,
-      "aws_upload_name" : <display name of app>,
-      "aws_upload_html_name" : <name of html file>,
+      "aws_upload_display_name" : <display name of app displayed to user>,
+      "aws_upload_file_name" : <name of files uploaded (if blank, index.html will be used)>,
       "aws_upload_list_all_versions" : <true | false>
     }
   }

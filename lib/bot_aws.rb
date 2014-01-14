@@ -23,8 +23,8 @@ class BotAWS
 
   def upload_build(bot, upload_bucket, branch_name)
     company_name = BotConfig.instance.company_name
-    upload_name = BotConfig.instance.aws_upload_name(branch_name)
-    title = (upload_name ? upload_name : branch_name)
+    upload_display_name = BotConfig.instance.aws_upload_display_name(branch_name)
+    title = (upload_name ? upload_display_name : branch_name)
     version_string = "2.2.0" #TODO figure out where to get this info
     bundle_identifier = BotConfig.instance.bundle_identifier(branch_name)
     list_versions = BotConfig.instance.aws_upload_list_all_versions(branch_name)
@@ -53,26 +53,28 @@ class BotAWS
 
     puts "Uploading..."
 
-    # Upload ipa
-    s3_bucket.objects["#{key_prefix}.ipa"].write(:file => file_name, :acl => :public_read)
-    puts "Uploaded \"#{file_name}\" to bucket #{upload_bucket}."
-
     template_path = File.dirname(__FILE__) + "/../templates"
+    custom_file_name = BotConfig.instance.aws_upload_file_name
+    file_name = (file_name ? file_name : key_prefix)
+
+    # Upload ipa
+    s3_bucket.objects["#{file_name}.ipa"].write(:file => file_name, :acl => :public_read)
+    puts "Uploaded \"#{file_name}\" to bucket #{upload_bucket}."
 
     # Upload plist
     plist_template = IO.read("#{template_path}/plist.template")
     template = Liquid::Template.parse(plist_template)
-    ipa_url = "https://#{upload_bucket}.s3.amazonaws.com/#{key_prefix}.ipa"
+    ipa_url = "https://#{upload_bucket}.s3.amazonaws.com/#{file_name}.ipa"
     plist_string = template.render(
       'ipa_url' => ipa_url,
       'bundle_identifier' => bundle_identifier,
       'version_string' => version_string,
       'title' => title
       )
-    s3_bucket.objects["#{key_prefix}.plist"].write(plist_string, :acl => :public_read)
+    s3_bucket.objects["#{file_name}.plist"].write(plist_string, :acl => :public_read)
     puts "Uploaded plist for \"#{key_prefix}\" to bucket #{upload_bucket}."
 
-    # Upload index.html
+    # Upload html file
     builds = []
     if (list_versions) # List each plist found in the bucket
       s3_bucket.objects.each do |object|
@@ -89,7 +91,7 @@ class BotAWS
     html_template = IO.read("#{template_path}/html.template")
     template = Liquid::Template.parse(html_template)
     html_string = template.render('company_name' => company_name, 'builds' => builds)
-    html_name = BotConfig.instance.aws_upload_html_name(branch_name)
+    html_name = BotConfig.instance.aws_upload_file_name(branch_name)
     html_file_name = (html_name ? html_name : 'index')
     s3_bucket.objects["#{html_file_name}.html"].write(html_string, :acl => :public_read)
     puts "Uploaded index.html to bucket #{upload_bucket}."
