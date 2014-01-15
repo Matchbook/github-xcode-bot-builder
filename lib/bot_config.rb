@@ -90,17 +90,12 @@ private
 
   def branch_parameter(br, key)
     if (@config[:branches].key?(br.intern))
-      value = @config[:branches][br.intern][key]
+      @config[:branches][br.intern][key]
     # If there's no config for this branch, use the default section
     elsif (@config[:branches].key?('default'))
-      value = @config[:branches]['default'][key]
+      @config[:branches]['default'][key]
     else
       nil
-    end
-    if (value.empty?) # Make sure an empty string isn't returned
-      nil
-    else
-      value
     end
   end
 end
