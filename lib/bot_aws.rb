@@ -60,7 +60,7 @@ class BotAWS
         # deep (Payload/<AppName>.app/Info.plist), this is the plist we're looking for!
         # TODO - find a better way to split path components
         path_array = e.name.split('/')
-        if (path_array[-1] == 'Info.plist' && (path_array.count < 4)
+        if (path_array[-1] == 'Info.plist' && path_array.count < 4)
           FileUtils.mkdir_p(extract_location)
           zf.extract(e, info_plist_location)
           break
