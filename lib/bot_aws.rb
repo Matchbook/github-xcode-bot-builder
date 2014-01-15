@@ -164,7 +164,7 @@ class BotAWS
     git_local_path = File.join(temp_path, git_repo_name)
     if (File.directory?(git_local_path))
       puts "Opening repo #{git_repo_name}"
-      git = Git.open(git_local_path, :log => Logger.new(STDOUT))
+      git = Git.open(git_local_path)
     else
       puts "Cloning repo #{git_repo_name}"
       # FileUtils.mkdir_p shouldn't be nessesary as directory is created when
@@ -180,7 +180,6 @@ class BotAWS
     last_commit_hash = git.log.first # ':first' is the *last* commit. Wonderful.
     test_commit_hash = bot.commits[git_url]
     puts "Git test:\n#{last_commit_hash}\n#{test_commit_hash}"
-    return
 
     if (last_commit_hash != test_commit_hash)
       puts "There has been a commit since #{test_commit_hash} - can not bump version"
