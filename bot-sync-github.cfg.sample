@@ -11,18 +11,24 @@
       "test_on_pull_request" : <true|false> (defaults to false),
       "test_on_branch_creation" : <true|false> (defaults to false)
   },
-  "branches" : {
-    "branch1" : {
-      "xcode_devices" : [
+  "branches" : { (branches that are missing will use "default")
+    <name of branch> : {
+      "xcode_devices" : [ (at least one required)
         "iphonesimulator iPhone Retina (4-inch) 7.0"
       ],
-      "xcode_scheme" : <name of scheme>,
+      "xcode_scheme" : <name of scheme> (required),
       "pass_on_warnings" : <true|false> (defaults to false),
       "pass_on_analyzer_issues" : <true|false> (defaults to false),
-      "aws_upload_bucket" : <aws bucket name for branch>,
-      "aws_upload_display_name" : <display name of app displayed to user>,
-      "aws_upload_html_file_name" : <name of html file uploaded (if blank, index.html will be used)>,
+      "aws_upload_bucket" : <aws bucket name for branch> (if missing, uploading is disabled),
+      "aws_upload_display_name" : <display name of app displayed to user> (if missing, CFBundleDisplayName is used),
+      "aws_upload_html_file_name" : <name of html file uploaded (if missing, index.html will be used)>,
       "aws_upload_list_all_versions" : <true | false> (defaults to false)
+    },
+    "default" : { ("default" is required with the following parameters)
+      "xcode_devices" : [ (at least one required)
+        "iphonesimulator iPhone Retina (4-inch) 7.0"
+      ],
+      "xcode_scheme" : <name of scheme> (required)
     }
   }
 }

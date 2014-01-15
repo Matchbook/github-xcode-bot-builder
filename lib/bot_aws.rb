@@ -13,7 +13,7 @@ class BotAWS
     aws_access_key_id = BotConfig.instance.aws_access_key_id
     aws_access_secret_key = BotConfig.instance.aws_access_secret_key
     if ( ! aws_access_key_id || ! aws_access_secret_key)
-      puts "Amazon access keys missing."
+      puts "Amazon access keys missing"
       return
     end
 
@@ -25,12 +25,14 @@ class BotAWS
   end
 
   def upload_build(bot, upload_bucket, branch_name)
+    # Get S3 bucket instance and check for its existance
     s3_bucket = @s3.buckets[upload_bucket]
     if ( ! s3_bucket.exists?)
-      puts "S3 bucket \"#{upload_bucket}\" does not exist."
+      puts "S3 bucket \"#{upload_bucket}\" does not exist"
       return
     end
 
+    # Build path to .ipa and check for its existance
     ipa_file_name = File.join(
       '/',
       'Library',
@@ -43,10 +45,11 @@ class BotAWS
       "#{bot.long_name}.ipa"
       )
     if ( ! File.exists?(ipa_file_name))
-      puts "File not uploaded. \"#{ipa_file_name}\" does not exist."
+      puts "File not uploaded. \"#{ipa_file_name}\" does not exist"
       return
     end
 
+    # Extract Info.plist from .ipa
     extract_location = File.join('/', 'tmp', 'gitbot', Time.now.to_i.to_s)
     info_plist_location = File.join(extract_location, 'Info.plist')
     Zip::File.open(ipa_file_name) do |zf|
@@ -59,51 +62,35 @@ class BotAWS
       end
     end
 
+    # Check if Info.plist was extracted successfully
     if ( ! File.exists?(info_plist_location))
-      puts "Could not extract Info.plist from ipa."
+      puts "Could not extract Info.plist from ipa"
       return
     end
 
+    # Get build info from Info.plist extracted above
     plist_buddy_path = File.join('/', 'usr', 'libexec', 'PlistBuddy')
     bundle_version_string = %x(#{plist_buddy_path} -c "Print CFBundleVersion" #{info_plist_location})
     bundle_identifier = %x(#{plist_buddy_path} -c "Print CFBundleIdentifier" #{info_plist_location})
     bundle_display_name = %x(#{plist_buddy_path} -c "Print CFBundleDisplayName" #{info_plist_location})
 
     upload_display_name = BotConfig.instance.aws_upload_display_name(branch_name)
-    title = (upload_display_name ? upload_display_name : bundle_display_name)
+    title = (upload_display_name ? upload_display_name : "#{bundle_display_name}-#{bundle_version_string}")
 
     file_name = "#{bundle_identifier}-#{bundle_version_string}"
 
+    # Check for existance of .plist so build is only uploaded ince
     if (s3_bucket.objects["#{file_name}.plist"].exists?)
       return # Build already uploaded
     end
-
-    git_url = BotConfig.instance.github_url
-    git_repo_name = git_url.sub('.git', '').split('/')[1]
-    temp_path = File.join('/', 'tmp', 'gitbot')
-    git_local_path = File.join(temp_path, git_repo_name)
-    if (File.directory?(git_local_path))
-      git = Git.open(git_local_path, :log => Logger.new(STDOUT))
-      puts "opening repo #{git_repo_name}."
-    else
-      FileUtils.mkdir_p(temp_path)
-      git = Git.clone(git_url, git_repo_name, :path => temp_path)
-      puts "cloning repo #{git_repo_name}."
-    end
-    git.branch(branch_name)
-
-    puts "git url #{git_url}"
-    last_commit_hash = bot.commits[git_url]
-    puts "Checking out commit #{last_commit_hash}"
-    git.checkout(last_commit_hash)
 
     puts "Uploading #{title}..."
 
     # Upload ipa
     s3_bucket.objects["#{file_name}.ipa"].write(:file => ipa_file_name, :acl => :public_read)
-    puts "Uploaded ipa for \"#{title}\" on branch \"#{branch_name}\" to bucket #{upload_bucket}."
+    puts "Uploaded ipa for \"#{title}\" on branch \"#{branch_name}\" to bucket #{upload_bucket}"
 
-    # Upload plist
+    # Create and upload plist
     template_path = File.join(File.dirname(__FILE__), '..', 'templates')
     plist_template = IO.read(File.join(template_path, 'plist.template'))
     template = Liquid::Template.parse(plist_template)
@@ -115,9 +102,9 @@ class BotAWS
       'title' => title
       )
     s3_bucket.objects["#{file_name}.plist"].write(plist_string, :acl => :public_read)
-    puts "Uploaded plist for \"#{title}\" on branch \"#{branch_name}\" to bucket #{upload_bucket}."
+    puts "Uploaded plist for \"#{title}\" on branch \"#{branch_name}\" to bucket #{upload_bucket}"
 
-    # Upload html file
+    # Create and upload html file
     builds = []
     custom_file_name = BotConfig.instance.aws_upload_html_file_name(branch_name)
     list_versions = BotConfig.instance.aws_upload_list_all_versions(branch_name)
@@ -138,9 +125,33 @@ class BotAWS
     template = Liquid::Template.parse(html_template)
     company_name = BotConfig.instance.company_name
     html_string = template.render('company_name' => company_name, 'builds' => builds)
-    html_name = BotConfig.instance.aws_upload_file_name(branch_name)
+    html_name = BotConfig.instance.aws_upload_html_file_name(branch_name)
     html_file_name = (html_name ? html_name : "index")
     s3_bucket.objects["#{html_file_name}.html"].write(html_string, :acl => :public_read)
-    puts "Uploaded #{html_file_name}.html on branch \"#{branch_name}\" to bucket #{upload_bucket}."
+    puts "Uploaded #{html_file_name}.html on branch \"#{branch_name}\" to bucket #{upload_bucket}"
+
+    # Clone or open repo so version can be bumped
+    git_url = BotConfig.instance.github_url
+    git_repo_name = git_url.sub('.git', '').split('/')[-1]
+    temp_path = File.join('/', 'tmp', 'gitbot')
+    git_local_path = File.join(temp_path, git_repo_name)
+    if (File.directory?(git_local_path))
+      puts "Opening repo #{git_repo_name}"
+      git = Git.open(git_local_path, :log => Logger.new(STDOUT))
+    else
+      puts "Cloning repo #{git_repo_name}"
+      # FileUtils.mkdir_p shouldn't be nessesary as directory is created when
+      # extracting Info.plist, but here just in case the path for repos is changed.
+      FileUtils.mkdir_p(temp_path)
+      git = Git.clone(git_url, git_repo_name, :path => temp_path)
+    end
+
+    # Switch to the proper git branch and checkout commit for this build
+    git.branch(branch_name)
+    last_commit_hash = bot.commits[git_url]
+    puts "Checking out commit #{last_commit_hash}"
+    git.checkout(last_commit_hash)
+
+    agvtool_path = File.join('/', 'usr', 'bin', 'agvtool')
   end
 end
