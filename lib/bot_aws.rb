@@ -4,6 +4,7 @@ require 'bot_config'
 require 'liquid'
 require 'git'
 require 'zip'
+require 'fileutils'
 
 class BotAWS
   include Singleton
@@ -41,30 +42,32 @@ class BotAWS
       'output',
       "#{bot.long_name}.ipa"
       )
-      if ( ! File.exists?(ipa_file_name))
+    if ( ! File.exists?(ipa_file_name))
       puts "File not uploaded. \"#{ipa_file_name}\" does not exist."
       return
     end
 
-    extract_location = File.join('/', 'tmp', Time.now.getutc.to_s, 'Info.plist')
-    Zip::ZipFile.open(ipa_file_name) do |zf|
+    extract_location = File.join('/', 'tmp', Time.now.to_i.to_s)
+    info_plist_location = File.join(extract_location, 'Info.plist')
+    Zip::File.open(ipa_file_name) do |zf|
       zf.each do |e|
-        if (e.name == "Info.plist")
+        if (e.name.end_with?('Info.plist'))
+          FileUtils.mkdir_p(extract_location)
           zf.extract(e.name, extract_location)
           break
         end
       end
     end
 
-    if ( ! File.exists?(extract_location))
+    if ( ! File.exists?(info_plist_location)
       puts "Could not extract Info.plist from ipa."
       return
     end
 
     plist_buddy_path = File.join('/', 'usr', 'libexec', 'PlistBuddy')
-    bundle_version_string = %x(#{plist_buddy_path} -c "Print CFBundleVersion" #{extract_location})
-    bundle_identifier = %x(#{plist_buddy_path} -c "Print CFBundleIdentifier" #{extract_location})
-    bundle_display_name = %x(#{plist_buddy_path} -c "Print CFBundleDisplayName" #{extract_location})
+    bundle_version_string = %x(#{plist_buddy_path} -c "Print CFBundleVersion" #{info_plist_location})
+    bundle_identifier = %x(#{plist_buddy_path} -c "Print CFBundleIdentifier" #{info_plist_location})
+    bundle_display_name = %x(#{plist_buddy_path} -c "Print CFBundleDisplayName" #{info_plist_location})
 
     upload_display_name = BotConfig.instance.aws_upload_display_name(branch_name)
     title = (upload_display_name ? upload_display_name : bundle_display_name)
