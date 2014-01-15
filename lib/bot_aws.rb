@@ -52,10 +52,15 @@ class BotAWS
     # Extract Info.plist from .ipa
     extract_location = File.join('/', 'tmp', 'gitbot', Time.now.to_i.to_s)
     info_plist_location = File.join(extract_location, 'Info.plist')
-
     Zip::File.open(ipa_file_name) do |zf|
       zf.each do |e|
-        if (e.name.end_with?('Info.plist'))
+        # The file we're looking for is in the root of the <AppName>.app folder
+        # and is called Info.plist. The directory heiarchy is Payload/<AppName>.app/...
+        # So if the last path component is 'Info.plist' and we're less than 4 compenents
+        # deep (Payload/<AppName>.app/Info.plist), this is the plist we're looking for!
+        # TODO - find a better way to split path components
+        path_array = e.name.split('/')
+        if (path_array[-1] == 'Info.plist' && (path_array.count < 4)
           FileUtils.mkdir_p(extract_location)
           zf.extract(e, info_plist_location)
           break
@@ -69,12 +74,12 @@ class BotAWS
       return
     end
 
-    # Info.plist returned above is in binary format
-    # Convert it to xml1 using plutil
+    # Info.plist returned above is in binary format - convert it to xml1 using plutil
     plutil_path = File.join('/', 'usr', 'bin', 'plutil')
     error = %x(#{plutil_path} -convert xml1 #{info_plist_location})
-    if ($?.to_i)
-      puts "Unable to convert Info.plist from binary to xml"
+    if ($?.to_i > 0)
+      puts "Unable to convert Info.plist from binary to xml - #{error}"
+      FileUtils.rm_r(extract_location) # Clean up tmp Info.plist
       return
     end
 
@@ -91,7 +96,7 @@ class BotAWS
     FileUtils.rm_r(extract_location)
 
     # Check if any of the above shell commands failed
-    if (bundle_version_string_exit || bundle_identifier_exit || bundle_display_name_exit)
+    if (bundle_version_string_exit > 0 || bundle_identifier_exit > 0 || bundle_display_name_exit > 0)
       puts "Unable to parse build info from Info.plist"
       return
     end
@@ -192,7 +197,7 @@ class BotAWS
     agvtool_path = File.join('/', 'usr', 'bin', 'agvtool')
     Dir.chdir(git_local_path)
     error = %x(#{agvtool_path} new-version #{build_version})
-    if ($?.to_i)
+    if ($?.to_i > 0)
       puts "Error bumping build version - #{error}"
       return
     end
