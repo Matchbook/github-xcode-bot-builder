@@ -46,8 +46,8 @@ class BotAWS
       return
     end
 
-    extract_location = File.join('/', 'tmp', "#{Time.now.getutc.to_s}", 'Info.plist')
-    Zip.open(ipa_file_name) do |zf|
+    extract_location = File.join('/', 'tmp', Time.now.getutc.to_s, 'Info.plist')
+    Zip::ZipFile.open(ipa_file_name) do |zf|
       zf.each do |e|
         if (e.name == "Info.plist")
           zf.extract(e.name, extract_location)
