@@ -59,7 +59,7 @@ class BotAWS
       end
     end
 
-    if ( ! File.exists?(info_plist_location)
+    if ( ! File.exists?(info_plist_location))
       puts "Could not extract Info.plist from ipa."
       return
     end
