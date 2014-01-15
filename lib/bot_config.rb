@@ -101,5 +101,6 @@ private
       nil
     else
       value
+    end
   end
 end
