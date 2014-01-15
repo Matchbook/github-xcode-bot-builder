@@ -130,7 +130,7 @@ class BotAWS
       build = {'url' => ipa_url, 'title' => title}
       builds << build
     end
-    html_template = IO.read(File.join(template_path, 'html.template')
+    html_template = IO.read(File.join(template_path, 'html.template'))
     template = Liquid::Template.parse(html_template)
     company_name = BotConfig.instance.company_name
     html_string = template.render('company_name' => company_name, 'builds' => builds)
