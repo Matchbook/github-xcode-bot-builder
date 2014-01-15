@@ -85,11 +85,11 @@ class BotAWS
 
     # Get build info from Info.plist extracted above
     plist_buddy_path = File.join('/', 'usr', 'libexec', 'PlistBuddy')
-    bundle_version_string = %x(#{plist_buddy_path} -c "Print CFBundleVersion" #{info_plist_location})
+    bundle_version_string = %x(#{plist_buddy_path} -c "Print CFBundleVersion" #{info_plist_location}).strip
     bundle_version_string_exit = $?.to_i
-    bundle_identifier = %x(#{plist_buddy_path} -c "Print CFBundleIdentifier" #{info_plist_location})
+    bundle_identifier = %x(#{plist_buddy_path} -c "Print CFBundleIdentifier" #{info_plist_location}).strip
     bundle_identifier_exit = $?.to_i
-    bundle_display_name = %x(#{plist_buddy_path} -c "Print CFBundleDisplayName" #{info_plist_location})
+    bundle_display_name = %x(#{plist_buddy_path} -c "Print CFBundleDisplayName" #{info_plist_location}).strip
     bundle_display_name_exit = $?.to_i
 
     # Clean up tmp Info.plist
@@ -175,7 +175,7 @@ class BotAWS
 
     # Switch to the proper git branch and checkout commit for this build
     #git.branch(branch_name)
-    git_branch = g.branch(branch_name)
+    git_branch = git.branch(branch_name)
     git.pull(git_branch)
     git.checkout(git_branch)
     last_commit_hash = Git::Log.last
