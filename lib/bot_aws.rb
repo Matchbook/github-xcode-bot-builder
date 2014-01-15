@@ -177,11 +177,12 @@ class BotAWS
     git_branch = git.branch(branch_name)
     git.checkout(git_branch)
     git.pull('origin', git_branch)
-    last_commit_hash = git.log.first # ':first' is the *last* commit. Wonderful.
+    last_commit_hash = git.log.first # :first is the *last* (most recent) commit. Wonderful.
     test_commit_hash = bot.commits[git_url]
-    puts "Git test:\n#{last_commit_hash}\n#{test_commit_hash}"
+    puts "Commit tested: #{test_commit_hash}"
+    puts "Most recent commit: #{last_commit_hash}"
 
-    if (last_commit_hash != test_commit_hash)
+    if (last_commit_hash.to_s != test_commit_hash.to_s)
       puts "There has been a commit since #{test_commit_hash} - can not bump version"
       return
     end
@@ -206,7 +207,7 @@ class BotAWS
 
     # Commit project
     git.commit_all("Bumped build version to #{build_version}.")
-    tag_prefix = BotConfig.instance.git_tag_prefix
+    tag_prefix = BotConfig.instance.git_tag_prefix(branch_name)
     if (tag_prefix)
       git.add_tag("#{tag_prefix}#{bundle_version_string}")
     end
