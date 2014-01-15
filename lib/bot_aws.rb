@@ -30,14 +30,24 @@ class BotAWS
       return
     end
 
-    ipa_file_name = "/Library/Server/Xcode/Data/BotRuns/BotRun-#{bot.latestSuccessfulBotRunGUID}.bundle/output/#{bot.long_name}.ipa"
-    if ( ! File.exists?(ipa_file_name))
+    ipa_file_name = File.join(
+      '/',
+      'Library',
+      'Server',
+      'Xcode',
+      'Data',
+      'BotRuns',
+      "BotRun-#{bot.latestSuccessfulBotRunGUID}.bundle",
+      'output',
+      "#{bot.long_name}.ipa"
+      )
+      if ( ! File.exists?(ipa_file_name))
       puts "File not uploaded. \"#{ipa_file_name}\" does not exist."
       return
     end
 
     extract_location = File.join('/', 'tmp', "#{Time.now.getutc.to_s}", 'Info.plist')
-    ZipFile.open(ipa_file_name) do |zf|
+    Zip.open(ipa_file_name) do |zf|
       zf.each do |e|
         if (e.name == "Info.plist")
           zf.extract(e.name, extract_location)
@@ -67,12 +77,13 @@ class BotAWS
 
     git_url = BotConfig.instance.github_url
     git_repo_name = git_url.sub('.git', '').split('/')[1]
-    git_local_path = "/tmp/gitbot/#{git_repo_name}"
+    temp_path = File.join('/', 'tmp', 'gitbot')
+    git_local_path = File.join(temp_path, git_repo_name)
     if (File.directory?(git_local_path))
       git = Git.open(git_local_path, :log => Logger.new(STDOUT))
       puts "opening repo #{git_repo_name}."
     else
-      git = Git.clone("/tmp/gitbot", git_repo, :path => git_local_path)
+      git = Git.clone(temp_path, git_repo, :path => git_local_path)
       puts "cloning repo #{git_repo_name}."
     end
     git.branch(branch_name)
@@ -119,7 +130,7 @@ class BotAWS
       build = {'url' => ipa_url, 'title' => title}
       builds << build
     end
-    html_template = IO.read("#{template_path}/html.template")
+    html_template = IO.read(File.join(template_path, 'html.template')
     template = Liquid::Template.parse(html_template)
     company_name = BotConfig.instance.company_name
     html_string = template.render('company_name' => company_name, 'builds' => builds)
