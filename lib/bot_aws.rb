@@ -53,7 +53,7 @@ class BotAWS
       zf.each do |e|
         if (e.name.end_with?('Info.plist'))
           FileUtils.mkdir_p(extract_location)
-          zf.extract(e.name, extract_location)
+          zf.extract(e, info_plist_location)
           break
         end
       end
