@@ -195,6 +195,9 @@ class BotAWS
       build_version = bundle_version_string.split('.')[-1].to_i
     end
 
+    # Bump build version
+    build_version = build_version + 1
+
     # Save build version in project
     agvtool_path = File.join('/', 'usr', 'bin', 'agvtool')
     Dir.chdir(git_local_path)
@@ -206,7 +209,7 @@ class BotAWS
     puts "Bumped build version to #{build_version}"
 
     puts "Status: #{git.status}"
-    return
+    return #TODO remove
 
     # Commit project
     git.commit_all("Bumped build version to #{build_version}.")
@@ -217,8 +220,7 @@ class BotAWS
     end
     git.push(remote = 'origin', branch = branch_name, :tags => true)
 
-    # Bump build version and write to file
-    build_version = build_version + 1 
+    # write build version to file
     IO.write(version_file_path, build_version.to_s)
   end
 end
