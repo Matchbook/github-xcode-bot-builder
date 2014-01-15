@@ -179,20 +179,19 @@ class BotAWS
     git.pull('origin', git_branch)
     last_commit_hash = git.log.first # :first is the *last* (most recent) commit. Wonderful.
     test_commit_hash = bot.commits[git_url]
-    puts "Commit tested: #{test_commit_hash}"
-    puts "Most recent commit: #{last_commit_hash}"
 
     if (last_commit_hash.to_s != test_commit_hash.to_s)
       puts "There has been a commit since #{test_commit_hash} - can not bump version"
+      puts "Most recent commit: #{last_commit_hash}"
       return
     end
 
     # Get last build's build version from file
-    version_file_path = File.join('/', 'tmp', 'gitbot', '.version')
+    version_file_path = File.join('/', 'tmp', 'gitbot', '.last-build-version')
     if (File.exist?(version_file_path))
       build_version = IO.read(version_file_path).to_i
     else
-      # If no file, use build number from bundle identifier
+      # If no file, use build number (last digit) from bundle identifier
       build_version = bundle_version_string.split('.')[-1].to_i
     end
 
@@ -204,14 +203,19 @@ class BotAWS
       puts "Error bumping build version - #{error}"
       return
     end
+    puts "Bumped build version to #{build_version}"
+
+    puts "Status: #{git.status}"
+    return
 
     # Commit project
     git.commit_all("Bumped build version to #{build_version}.")
     tag_prefix = BotConfig.instance.git_tag_prefix(branch_name)
-    if (tag_prefix)
-      git.add_tag("#{tag_prefix}#{bundle_version_string}")
+    tag_string = "#{tag_prefix}#{bundle_version_string}"
+    if (tag_prefix) #TODO Adding a tag that is already present causes Git to throw exception
+      git.add_tag(tag_string)
     end
-    git.push(remote = 'origin', branch = branch_name)
+    git.push(remote = 'origin', branch = branch_name, :tags => true)
 
     # Bump build version and write to file
     build_version = build_version + 1 
