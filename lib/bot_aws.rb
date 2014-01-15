@@ -174,16 +174,18 @@ class BotAWS
     end
 
     # Switch to the proper git branch and checkout commit for this build
-    #git.branch(branch_name)
     git_branch = git.branch(branch_name)
     git.checkout(git_branch)
-    git.pull
-    last_commit_hash = git.log.last
+    git.pull('origin', git_branch)
+    last_commit_hash = git.log.first # ':first' is the *last* commit. Wonderful.
     test_commit_hash = bot.commits[git_url]
     puts "Git test:\n#{last_commit_hash}\n#{test_commit_hash}"
-    #puts "Checking out commit #{last_commit_hash}"
-    #git.checkout(last_commit_hash)
     return
+
+    if (last_commit_hash != test_commit_hash)
+      puts "There has been a commit since #{test_commit_hash} - can not bump version"
+      return
+    end
 
     # Get last build's build version from file
     version_file_path = File.join('/', 'tmp', 'gitbot', '.version')
