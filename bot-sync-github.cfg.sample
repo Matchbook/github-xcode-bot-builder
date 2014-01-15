@@ -6,7 +6,7 @@
       "aws_access_key_id" : <aws access key id>,
       "aws_access_secret_key" : <aws access secret key>,
       "xcode_server_hostname" : localhost (or server hostname/ip),
-      "company_name" = <name of company>,
+      "company_name" = <name of company> (this appears as the title of html pages for upload),
       "xcode_project_or_workspace" : <name of project or workspace>,
       "test_on_pull_request" : <true|false> (defaults to false),
       "test_on_branch_creation" : <true|false> (defaults to false)

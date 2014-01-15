@@ -71,8 +71,20 @@ class BotAWS
     # Get build info from Info.plist extracted above
     plist_buddy_path = File.join('/', 'usr', 'libexec', 'PlistBuddy')
     bundle_version_string = %x(#{plist_buddy_path} -c "Print CFBundleVersion" #{info_plist_location})
+    bundle_version_string_exit = $?.to_i
     bundle_identifier = %x(#{plist_buddy_path} -c "Print CFBundleIdentifier" #{info_plist_location})
+    bundle_identifier_exit = $?.to_i
     bundle_display_name = %x(#{plist_buddy_path} -c "Print CFBundleDisplayName" #{info_plist_location})
+    bundle_display_name_exit = $?.to_i
+
+    # Clean up tmp Info.plist
+    FileUtils.rm_r(extract_location)
+
+    # Check if any of the above shell commands failed
+    if (bundle_version_string_exit || bundle_identifier_exit || bundle_display_name_exit)
+      puts "Unable to parse build info from Info.plist"
+      return
+    end
 
     upload_display_name = BotConfig.instance.aws_upload_display_name(branch_name)
     title = (upload_display_name ? upload_display_name : "#{bundle_display_name}-#{bundle_version_string}")
@@ -152,6 +164,11 @@ class BotAWS
     puts "Checking out commit #{last_commit_hash}"
     git.checkout(last_commit_hash)
 
+    # Bump build version
     agvtool_path = File.join('/', 'usr', 'bin', 'agvtool')
+    %x(#{agvtool_path} bump)
+    if ($?.to_i)
+      puts "Error bumping build version"
+    end
   end
 end

@@ -33,11 +33,13 @@ class BotGithub
         bots_processed << br.bot_short_name
         if (bot.nil?)
           # Create a new bot
+          xcode_devices = BotConfig.instance.xcode_devices(br.name)
+          xcode_scheme = BotConfig.instance.xcode_scheme(br.name)
           BotBuilder.instance.create_bot(br.bot_short_name, br.bot_long_name, br.name,
-                                         BotConfig.instance.scm_path,
+                                         BotConfig.instance.github_repo,
                                          BotConfig.instance.xcode_project_or_workspace,
-                                         BotConfig.instance.xcode_scheme,
-                                         BotConfig.instance.xcode_devices)
+                                         xcode_scheme,
+                                         xcode_devices)
           create_status_new_build(br)
         else
           github_state_cur = latest_github_state(br).state # :unknown :pending :success :error :failure
@@ -61,7 +63,7 @@ class BotGithub
             create_status(br, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
           elsif (github_state_new == :success)
             puts "#{br.bot_long_name} passed!"
-            branch_name = br.name.sub('BR ', '') # branch name is bot name minus leading BR<space>
+            branch_name = br.name #.sub('BR ', '') # branch name is bot name minus leading BR<space>
             upload_bucket = BotConfig.instance.aws_upload_bucket(branch_name)
             if (upload_bucket)
               BotAWS.instance.upload_build(bot, upload_bucket, branch_name)

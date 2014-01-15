@@ -91,6 +91,9 @@ private
   def branch_parameter(br, key)
     if (@config[:branches].key?(br.intern))
       @config[:branches][br.intern][key]
+    # If there's no config for this branch, use the default section
+    elsif (@config[:branches].key?('default'))
+      @config[:branches]['default'][key]
     else
       nil
     end
