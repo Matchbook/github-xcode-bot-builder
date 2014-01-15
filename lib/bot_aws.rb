@@ -86,7 +86,7 @@ class BotAWS
       git = Git.open(git_local_path, :log => Logger.new(STDOUT))
       puts "opening repo #{git_repo_name}."
     else
-      git = Git.clone(temp_path, git_repo, :path => git_local_path)
+      git = Git.clone(temp_path, git_repo_name, :path => git_local_path)
       puts "cloning repo #{git_repo_name}."
     end
     git.branch(branch_name)
