@@ -63,11 +63,18 @@ class BotAWS
       end
     end
 
-    puts "Info.plist #{IO.read(info_plist_location)}"
-
     # Check if Info.plist was extracted successfully
     if ( ! File.exists?(info_plist_location))
       puts "Could not extract Info.plist from ipa"
+      return
+    end
+
+    # Info.plist returned above is in binary format
+    # Convert it to xml1 using plutil
+    plutil_path = File.join('/', 'usr', 'bin', 'plutil')
+    error = %x(#{plutil_path} -convert xml1 #{info_plist_location})
+    if ($?.to_i)
+      puts "Unable to convert Info.plist from binary to xml"
       return
     end
 
@@ -172,15 +179,34 @@ class BotAWS
     #puts "Checking out commit #{last_commit_hash}"
     #git.checkout(last_commit_hash)
 
-    # Bump build version
+    # Get last build's build version from file
+    version_file_path = File.join('/', 'tmp', 'gitbot', '.version')
+    if (File.exist?(version_file_path))
+      build_version = IO.read(version_file_path).to_i
+    else
+      # If no file, use build number from bundle identifier
+      build_version = bundle_version_string.split('.')[-1].to_i
+    end
+
+    # Save build version in project
     agvtool_path = File.join('/', 'usr', 'bin', 'agvtool')
     Dir.chdir(git_local_path)
-    version = 100
-    error = %x(#{agvtool_path} new-version #{version})
+    error = %x(#{agvtool_path} new-version #{build_version})
     if ($?.to_i)
       puts "Error bumping build version - #{error}"
       return
     end
-    #g.commit_all("Bumped build version to #{version}.")
+
+    # Commit project
+    git.commit_all("Bumped build version to #{build_version}.")
+    tag_prefix = BotConfig.instance.git_tag_prefix
+    if (tag_prefix)
+      git.add_tag("#{tag_prefix}#{bundle_version_string}")
+    end
+    git.push(git.remote('origin'))
+
+    # Bump build version and write to file
+    build_version = build_version + 1 
+    IO.write(version_file_path, build_version.to_s)
   end
 end

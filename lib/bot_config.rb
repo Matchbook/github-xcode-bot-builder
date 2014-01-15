@@ -86,6 +86,10 @@ class BotConfig
     (!!branch_parameter(br, :aws_upload_list_all_versions) ? true : false)
   end
 
+  def git_tag_prefix(br)
+    branch_parameter(br, :git_tag_prefix)
+  end
+
 private
 
   def branch_parameter(br, key)
