@@ -47,7 +47,7 @@ class BotAWS
       return
     end
 
-    extract_location = File.join('/', 'tmp', Time.now.to_i.to_s)
+    extract_location = File.join('/', 'tmp', 'gitbot', Time.now.to_i.to_s)
     info_plist_location = File.join(extract_location, 'Info.plist')
     Zip::File.open(ipa_file_name) do |zf|
       zf.each do |e|
@@ -87,7 +87,7 @@ class BotAWS
       puts "opening repo #{git_repo_name}."
     else
       FileUtils.mkdir_p(temp_path)
-      git = Git.clone(temp_path, git_repo_name, :path => git_local_path)
+      git = Git.clone(git_url, git_repo_name, :path => temp_path)
       puts "cloning repo #{git_repo_name}."
     end
     git.branch(branch_name)
