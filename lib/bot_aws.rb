@@ -159,16 +159,25 @@ class BotAWS
     end
 
     # Switch to the proper git branch and checkout commit for this build
-    git.branch(branch_name)
-    last_commit_hash = bot.commits[git_url]
-    puts "Checking out commit #{last_commit_hash}"
-    git.checkout(last_commit_hash)
+    #git.branch(branch_name)
+    git_branch = g.branch(branch_name)
+    git.pull(git_branch)
+    git.checkout(git_branch)
+    last_commit_hash = Git::Log.last
+    test_commit_hash = bot.commits[git_url]
+    puts "Git test:\n#{last_commit_hash}\n#{test_commit_hash}"
+    #puts "Checking out commit #{last_commit_hash}"
+    #git.checkout(last_commit_hash)
 
     # Bump build version
     agvtool_path = File.join('/', 'usr', 'bin', 'agvtool')
-    %x(#{agvtool_path} bump)
+    Dir.chdir(git_local_path)
+    version = 100
+    error = %x(#{agvtool_path} new-version #{version})
     if ($?.to_i)
-      puts "Error bumping build version"
+      puts "Error bumping build version - #{error}"
+      return
     end
+    #g.commit_all("Bumped build version to #{version}.")
   end
 end
