@@ -211,7 +211,7 @@ class BotAWS
     if (tag_prefix)
       git.add_tag("#{tag_prefix}#{bundle_version_string}")
     end
-    git.push(git.remote('origin'))
+    git.push(remote = 'origin', branch = branch_name)
 
     # Bump build version and write to file
     build_version = build_version + 1 
