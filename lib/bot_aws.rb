@@ -52,6 +52,15 @@ class BotAWS
     # Extract Info.plist from .ipa
     extract_location = File.join('/', 'tmp', 'gitbot', Time.now.to_i.to_s)
     info_plist_location = File.join(extract_location, 'Info.plist')
+
+    Zip::Archive.open(ipa_file_name) do |ar|
+      ar.fopen('Info.plist') do |f|
+        content = f.read
+        puts "Info.plist: #{content}"
+      end
+    end
+
+=begin
     Zip::File.open(ipa_file_name) do |zf|
       zf.each do |e|
         if (e.name.end_with?('Info.plist'))
@@ -61,6 +70,7 @@ class BotAWS
         end
       end
     end
+=end
 
     # Check if Info.plist was extracted successfully
     if ( ! File.exists?(info_plist_location))
