@@ -222,7 +222,11 @@ class BotAWS
 
     # Commit project
     # Making a commit when there's nothing to commit causes an exception
-    if (git.status.changed == false)
+    # Not sure how to see if a status has new commits; I'll just call git myself
+    #TODO Figure out how to do this using the git library
+    status_output = %x(git status)
+    status = status_output[1]
+    if (status.to_s.begin_with?('nothing to commit'))
       puts "Nothing to commit - it appears build version wasn't bumped"
       return
     end
@@ -241,6 +245,7 @@ class BotAWS
     # If not tag prefix is specified in the config file, then no tag is created
     if (tag_prefix && ! tag_exists)
       git.add_tag(tag_string)
+      puts "Created tag \"#{tag_string}\" for #{branch_name}"
     end
     git.push(remote = 'origin', branch = branch_name, :tags => true)
     puts "Pushed #{branch_name} to origin"
