@@ -163,7 +163,8 @@ class BotAWS
       s3_bucket.objects.each do |object|
         if (object.key.end_with?('plist'))
           url = "https://#{upload_bucket}.s3.amazonaws.com/#{object.key}"
-          build = {'url' => url, 'title' => title}
+          v_number = object.key.split('-')[-1]
+          build = {'url' => url, 'title' => "#{bundle_display_name}-#{v_number}"}
           builds << build
         end
       end
