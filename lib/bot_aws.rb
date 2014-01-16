@@ -231,18 +231,9 @@ class BotAWS
       puts "Committed #{branch_name} #{bundle_version_string}"
     end
     tag_prefix = BotConfig.instance.git_tag_prefix(branch_name)
-    tag_string = "#{tag_prefix}#{bundle_version_string}"
-    tag_exists = false
-    git.tags do |tag| # Adding a tag that is already present causes Git to throw exception
-      if (tag_string.to_s == tag.name.to_s)
-        tag_exists = true
-        puts "Tag #{tag_string} already exists on a different commit"
-        break
-      end
-    end
-    # If not tag prefix is specified in the config file, then no tag is created
-    if (tag_prefix && ! tag_exists)
-      git.add_tag(tag_string)
+    # If no tag prefix is specified in the config file, then no tag is created
+    if (tag_prefix)
+      %x(git tag #{tag_prefix}#{bundle_version_string})
       puts "Created tag \"#{tag_string}\" for #{branch_name}"
     end
     git.push(remote = 'origin', branch = branch_name, :tags => true)
