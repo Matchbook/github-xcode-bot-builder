@@ -100,20 +100,22 @@ class BotAWS
     # Version file is json with the <major.minor> as the key
     # This way each app version has independent build numbers
     version_file_path = File.join('/', 'tmp', 'gitbot', '.last-build-version')
+    vs_components = bundle_version_string.split('.')
+    major_minor = "#{vs_components[0]}.#{vs_components[1]}"
+
     if (File.exist?(version_file_path))
       build_versions = JSON.parse(IO.read(version_file_path))
     else
       build_versions = {}
     end
-    if (build_versions[bundle_version_string])
-      build_version = build_versions[bundle_version_string].to_i
+    if (build_versions[major_minor])
+      build_version = build_versions[major_minor].to_i
       build_version = build_version + 1
     else
       build_version = 0
     end
 
-    vs_components = bundle_version_string.split('.')
-    bundle_version_string = "#{vs_components[0]}.#{vs_components[1]}.#{build_version}"
+    bundle_version_string = "#{major_minor}.#{build_version}"
 
     # Check if any of the above shell commands failed
     if (bundle_version_string_exit > 0 || bundle_identifier_exit > 0 || bundle_display_name_exit > 0)
@@ -249,7 +251,7 @@ class BotAWS
     puts "Pushed #{branch_name} to origin"
 
     # write build versions back to file
-    build_versions[bundle_version_string] = build_version
+    build_versions[major_minor] = build_version
     IO.write(version_file_path, JSON.pretty_generate(build_versions))
   end
 end
