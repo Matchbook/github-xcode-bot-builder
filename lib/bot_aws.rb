@@ -224,10 +224,10 @@ class BotAWS
     status = status_output.split("\n")[-1]
     if (status.to_s.start_with?('nothing to commit'))
       puts "Nothing to commit - it appears build version wasn't bumped"
-      return
+    else
+      git.commit_all("Bumped build version to #{build_version}.")
+      puts "Committed #{branch_name} #{bundle_version_string}"
     end
-    git.commit_all("Bumped build version to #{build_version}.")
-    puts "Committed #{branch_name} #{bundle_version_string}"
     tag_prefix = BotConfig.instance.git_tag_prefix(branch_name)
     tag_string = "#{tag_prefix}#{bundle_version_string}"
     tag_exists = false

@@ -68,6 +68,13 @@ class BotGithub
                 BotAWS.instance.upload_build(bot, upload_bucket, br.name)
               end
             end
+          # Here temp to test without integrating each time
+          elsif (github_state_new == :success)
+            puts "#{br.bot_long_name} passed!"
+            upload_bucket = BotConfig.instance.aws_upload_bucket(br.name)
+            if (upload_bucket)
+              BotAWS.instance.upload_build(bot, upload_bucket, br.name)
+            end
           else
             puts "#{br.bot_long_name} (#{github_state_cur}) is up to date."
           end
