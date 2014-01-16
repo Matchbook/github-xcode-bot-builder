@@ -96,6 +96,29 @@ class BotAWS
     # Clean up tmp Info.plist
     FileUtils.rm_r(extract_location)
 
+    # Get last build's build version from file
+    # Version file is json with the <major.minor> as the key
+    # This way each app version has independent build numbers
+    version_file_path = File.join('/', 'tmp', 'gitbot', '.last-build-version')
+    if (File.exist?(version_file_path))
+      build_versions = JSON.parse(IO.read(version_file_path))
+    else
+      build_versions = {}
+    end
+    if (build_versions[bundle_version_string])
+      build_version = build_versions[bundle_version_string].to_i
+      build_version = build_version + 1
+    else
+      build_version = 0
+    end
+
+    vs_components = bundle_version_string.split('.')
+    if (vs_components.count > 1)
+      bundle_version_string = "#{vs_components[0]}.#{vs_components[1]}.#{build_version}"
+    else
+      puts "bundle_version_string does not have at least two places - build_version_string not updated"
+    end
+
     # Check if any of the above shell commands failed
     if (bundle_version_string_exit > 0 || bundle_identifier_exit > 0 || bundle_display_name_exit > 0)
       puts "Unable to parse build info from Info.plist"
@@ -182,25 +205,9 @@ class BotAWS
     test_commit_hash = bot.commits[git_url]
 
     if (last_commit_hash.to_s != test_commit_hash.to_s)
-      puts "There has been a commit since #{test_commit_hash} - can not bump version"
+      puts "There has been a commit since #{test_commit_hash} - can not bump version in repo"
       puts "Most recent commit: #{last_commit_hash}"
       return
-    end
-
-    # Get last build's build version from file
-    # Version file is json with the <major.minor> as the key
-    # This way each app version has independent build numbers
-    version_file_path = File.join('/', 'tmp', 'gitbot', '.last-build-version')
-    if (File.exist?(version_file_path))
-      build_versions = JSON.parse(IO.read(version_file_path))
-    else
-      build_versions = {}
-    end
-    if (build_versions[bundle_version_string])
-      build_version = build_versions[bundle_version_string].to_i
-      build_version = build_version + 1
-    else
-      build_version = 0
     end
 
     # Save build version in project
@@ -211,7 +218,7 @@ class BotAWS
       puts "Error bumping build version - #{error}"
       return
     end
-    puts "Bumped build version to #{build_version}"
+    puts "Changed build version to #{build_version}"
 
     # Commit project
     # Making a commit when there's nothing to commit causes an exception
@@ -220,6 +227,7 @@ class BotAWS
       return
     end
     git.commit_all("Bumped build version to #{build_version}.")
+    puts "Committed #{branch_name} #{bundle_version_string}"
     tag_prefix = BotConfig.instance.git_tag_prefix(branch_name)
     tag_string = "#{tag_prefix}#{bundle_version_string}"
     tag_exists = false
@@ -230,12 +238,15 @@ class BotAWS
         break
       end
     end
+    # If not tag prefix is specified in the config file, then no tag is created
     if (tag_prefix && ! tag_exists)
       git.add_tag(tag_string)
     end
     git.push(remote = 'origin', branch = branch_name, :tags => true)
+    puts "Pushed #{branch_name} to origin"
 
     # write build versions back to file
+    build_versions[bundle_version_string] = build_version
     IO.write(version_file_path, JSON.pretty_generate(build_versions))
   end
 end
