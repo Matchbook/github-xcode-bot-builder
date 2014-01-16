@@ -220,8 +220,8 @@ class BotAWS
     # Making a commit when there's nothing to commit causes an exception
     # Not sure how to see if a status has new commits; I'll just call git myself
     #TODO Figure out how to do this using the git library
-    status_output = %x(git status).split('\n')
-    status = status_output[1]
+    status_output = %x(git status)
+    status = status_output.split("\n")[1]
     if (status.to_s.start_with?('nothing to commit'))
       puts "Nothing to commit - it appears build version wasn't bumped"
       return
