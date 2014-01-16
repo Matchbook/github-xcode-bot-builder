@@ -234,8 +234,11 @@ class BotAWS
     tag_prefix = BotConfig.instance.git_tag_prefix(branch_name)
     # If no tag prefix is specified in the config file, then no tag is created
     if (tag_prefix)
-      %x(git tag #{tag_prefix}#{bundle_version_string})
-      puts "Created tag \"#{tag_string}\" for #{branch_name}"
+      tag_string = "#{tag_prefix}#{bundle_version_string}"
+      %x(git tag #{tag_string})
+      if ($?.to_i == 0)
+        puts "Created tag \"#{tag_string}\" for #{branch_name}"
+      end
     end
     git.push(remote = 'origin', branch = branch_name, :tags => true)
     # Mark this new commit as 'success' so the bot isn't triggered by this commit
