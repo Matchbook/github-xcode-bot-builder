@@ -63,10 +63,9 @@ class BotGithub
             create_status(br, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
             if (github_state_new == :success)
               puts "#{br.bot_long_name} passed!"
-              branch_name = br.name
-              upload_bucket = BotConfig.instance.aws_upload_bucket(branch_name)
+              upload_bucket = BotConfig.instance.aws_upload_bucket(br.name)
               if (upload_bucket)
-                BotAWS.instance.upload_build(bot, upload_bucket, branch_name)
+                BotAWS.instance.upload_build(bot, upload_bucket, br.name)
               end
             end
           else
