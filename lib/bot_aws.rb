@@ -226,7 +226,7 @@ class BotAWS
     #TODO Figure out how to do this using the git library
     status_output = %x(git status)
     status = status_output[1]
-    if (status.to_s.begin_with?('nothing to commit'))
+    if (status.to_s.start_with?('nothing to commit'))
       puts "Nothing to commit - it appears build version wasn't bumped"
       return
     end
