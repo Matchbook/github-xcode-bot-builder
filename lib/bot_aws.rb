@@ -130,6 +130,7 @@ class BotAWS
 
     # Check for existance of .plist so build is only uploaded ince
     if (s3_bucket.objects["#{file_name}.plist"].exists?)
+      puts "A build already exists on S3 for #{title}"
       return # Build already uploaded
     end
 
