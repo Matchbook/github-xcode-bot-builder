@@ -5,6 +5,7 @@ require 'liquid'
 require 'git'
 require 'zip'
 require 'fileutils'
+require 'json'
 
 class BotAWS
   include Singleton
@@ -187,16 +188,20 @@ class BotAWS
     end
 
     # Get last build's build version from file
+    # Version file is json with the <major.minor> as the key
+    # This way each app version has independent build numbers
     version_file_path = File.join('/', 'tmp', 'gitbot', '.last-build-version')
     if (File.exist?(version_file_path))
-      build_version = IO.read(version_file_path).to_i
+      build_versions = JSON.parse(IO.read(version_file_path))
     else
-      # If no file, use build number (last digit) from bundle identifier
-      build_version = bundle_version_string.split('.')[-1].to_i
+      build_versions = {}
     end
-
-    # Bump build version
-    build_version = build_version + 1
+    if (build_versions[bundle_version_string])
+      build_version = build_versions[bundle_version_string]
+      build_version = build_version + 1
+    else
+      build_version = 0
+    end
 
     # Save build version in project
     agvtool_path = File.join('/', 'usr', 'bin', 'agvtool')
@@ -209,9 +214,11 @@ class BotAWS
     puts "Bumped build version to #{build_version}"
 
     puts "Status: #{git.status}"
+    puts "Tags #{git.tags}"
     return #TODO remove
 
     # Commit project
+    #TODO making a commit when there's nothing to commit causes an exception
     git.commit_all("Bumped build version to #{build_version}.")
     tag_prefix = BotConfig.instance.git_tag_prefix(branch_name)
     tag_string = "#{tag_prefix}#{bundle_version_string}"
@@ -220,7 +227,7 @@ class BotAWS
     end
     git.push(remote = 'origin', branch = branch_name, :tags => true)
 
-    # write build version to file
-    IO.write(version_file_path, build_version.to_s)
+    # write build versions back to file
+    IO.write(version_file_path, JSON.pretty_generate(build_versions))
   end
 end
