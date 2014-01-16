@@ -197,7 +197,7 @@ class BotAWS
       build_versions = {}
     end
     if (build_versions[bundle_version_string])
-      build_version = build_versions[bundle_version_string]
+      build_version = build_versions[bundle_version_string].to_i
       build_version = build_version + 1
     else
       build_version = 0
@@ -213,16 +213,24 @@ class BotAWS
     end
     puts "Bumped build version to #{build_version}"
 
-    puts "Status: #{git.status}"
-    puts "Tags #{git.tags}"
-    return #TODO remove
-
     # Commit project
-    #TODO making a commit when there's nothing to commit causes an exception
+    # Making a commit when there's nothing to commit causes an exception
+    if (git.status.changed == false)
+      puts "Nothing to commit - it appears build version wasn't bumped"
+      return
+    end
     git.commit_all("Bumped build version to #{build_version}.")
     tag_prefix = BotConfig.instance.git_tag_prefix(branch_name)
     tag_string = "#{tag_prefix}#{bundle_version_string}"
-    if (tag_prefix) #TODO Adding a tag that is already present causes Git to throw exception
+    tag_exists = false
+    git.tags do |tag| # Adding a tag that is already present causes Git to throw exception
+      if (tag_string.to_s == tag.name.to_s)
+        tag_exists = true
+        puts "Tag #{tag_string} already exists on a different commit"
+        break
+      end
+    end
+    if (tag_prefix && ! tag_exists)
       git.add_tag(tag_string)
     end
     git.push(remote = 'origin', branch = branch_name, :tags => true)
