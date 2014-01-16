@@ -61,12 +61,13 @@ class BotGithub
             # Build has passed or failed
             puts "#{br.bot_long_name} status updated from #{github_state_cur} to #{github_state_new}."
             create_status(br, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
-          elsif (github_state_new == :success)
-            puts "#{br.bot_long_name} passed!"
-            branch_name = br.name #.sub('BR ', '') # branch name is bot name minus leading BR<space>
-            upload_bucket = BotConfig.instance.aws_upload_bucket(branch_name)
-            if (upload_bucket)
-              BotAWS.instance.upload_build(bot, upload_bucket, branch_name)
+            if (github_state_new == :success)
+              puts "#{br.bot_long_name} passed!"
+              branch_name = br.name
+              upload_bucket = BotConfig.instance.aws_upload_bucket(branch_name)
+              if (upload_bucket)
+                BotAWS.instance.upload_build(bot, upload_bucket, branch_name)
+              end
             end
           else
             puts "#{br.bot_long_name} (#{github_state_cur}) is up to date."
