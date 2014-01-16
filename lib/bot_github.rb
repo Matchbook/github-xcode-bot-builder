@@ -51,7 +51,7 @@ class BotGithub
           if (github_state_new == :pending && github_state_cur != github_state_new)
             # User triggered a new build by clicking Integrate on the Xcode server interface
             puts "#{br.bot_long_name} manually triggered."
-            create_status(br, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
+            create_status(br.sha, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
           elsif (github_state_cur == :unknown || user_requested_retest(br, bot))
             # Unknown state occurs when there's a new commit so trigger a new build
             puts "#{br.bot_long_name} has a new commit - triggering CI."
@@ -60,7 +60,7 @@ class BotGithub
           elsif (github_state_new != :unknown && github_state_cur != github_state_new)
             # Build has passed or failed
             puts "#{br.bot_long_name} status updated from #{github_state_cur} to #{github_state_new}."
-            create_status(br, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
+            create_status(br.sha, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
             if (github_state_new == :success)
               puts "#{br.bot_long_name} passed!"
               upload_bucket = BotConfig.instance.aws_upload_bucket(br.name)
@@ -93,11 +93,11 @@ class BotGithub
           github_state_new = convert_bot_status_to_github_state(bot)
           if (github_state_new == :pending && github_state_cur != github_state_new)
             # User triggered a new build by clicking Integrate on the Xcode server interface
-            create_status(pr, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
+            create_status(pr.sha, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
           elsif (github_state_new != :unknown && github_state_cur != github_state_new)
             # Build has passed or failed so update status and comment on the issue
             create_comment_for_bot_status(pr, bot)
-            create_status(pr, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
+            create_status(pr.sha, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
           elsif (github_state_cur == :unknown || user_requested_retest(pr, bot))
             # Unknown state occurs when there's a new commit so trigger a new build
             BotBuilder.instance.start_bot(bot.guid)
@@ -117,6 +117,10 @@ class BotGithub
     end
 
     puts "-----------------------------------------------------------\nFinished Github Xcode Bot Builder #{Time.now}\n"
+  end
+
+  def create_status_success(sha)
+    create_status(sha, :success, 'Version number bumped.', target_url = nil)
   end
 
   private
@@ -160,10 +164,10 @@ class BotGithub
   end
 
   def create_status_new_build(pr)
-    create_status(pr, :pending, "Build Triggered.")
+    create_status(pr.sha, :pending, "Build Triggered.")
   end
 
-  def create_status(pr, github_state, description = nil, target_url = nil)
+  def create_status(sha, github_state, description = nil, target_url = nil)
     options = {}
     if (!description.nil?)
       options['description'] = description
@@ -171,8 +175,8 @@ class BotGithub
     if (!target_url.nil?)
       options['target_url'] = target_url
     end
-    @client.create_status(BotConfig.instance.github_repo, pr.sha, github_state.to_s, options)
-    puts "PR #{pr.number} status updated to \"#{github_state}\" with description \"#{description}\""
+    @client.create_status(BotConfig.instance.github_repo, sha, github_state.to_s, options)
+    puts "Status updated to \"#{github_state}\" with description \"#{description}\""
   end
 
   def latest_github_state(pr)

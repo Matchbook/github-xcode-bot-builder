@@ -227,6 +227,8 @@ class BotAWS
     else
       git.commit_all("Bumped build version to #{build_version}.")
       puts "Committed #{branch_name} #{bundle_version_string}"
+      # Mark this new commit as 'success' so the bot isn't triggered by this commit
+      BotGithub.instance.create_status_success(git.log.first)
     end
     tag_prefix = BotConfig.instance.git_tag_prefix(branch_name)
     tag_string = "#{tag_prefix}#{bundle_version_string}"
