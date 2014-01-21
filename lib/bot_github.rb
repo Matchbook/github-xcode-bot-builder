@@ -36,7 +36,7 @@ class BotGithub
           xcode_devices = BotConfig.instance.xcode_devices(br.name)
           xcode_scheme = BotConfig.instance.xcode_scheme(br.name)
           BotBuilder.instance.create_bot(br.bot_short_name, br.bot_long_name, br.name,
-                                         BotConfig.instance.github_repo,
+                                         BotConfig.instance.github_url,
                                          BotConfig.instance.xcode_project_or_workspace,
                                          xcode_scheme,
                                          xcode_devices)
