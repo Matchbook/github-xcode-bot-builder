@@ -12,7 +12,7 @@ A command line tool that creates/manages/deletes Xcode 5 server bots for each Gi
 
 If enabled, when a pull request is opened a corresponding Xcode bot is created. When a new commit is pushed the bot is re-run. When the build finishes the github pull request status is updated with a comment if there's an error. Users can request that a pull request be retested by adding a comment that includes the word "retest" (case insensitive). When a pull request is closed the corresponding bot is deleted.
 
-If enabled, when a branch is created a corresponding Xcode bot is created. When a new commit is pushed the bot is re-run. When the build finishes the github commit status is updated with a comment if there's an error. When a branch is deleted the corresponding bot is deleted.
+If enabled, when a branch is created a corresponding Xcode bot is created. When a new commit is pushed the bot is re-run. When the build finishes the github commit status is updated. When a branch is deleted the corresponding bot is deleted.
 
 Setup
 ====================================
@@ -61,6 +61,7 @@ Contributors
  - [Geoffery Nix](http://github.com/geoffnix)
  - [Two Bit Labs](http://twobitlabs.com/)
  - [Todd Huss](http://github.com/thuss)
+ - [Tom Corwine](https://github.com/TomCorwine)
 
 Copyright
 ====================================
