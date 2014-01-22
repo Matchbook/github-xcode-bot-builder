@@ -96,6 +96,12 @@ class BotAWS
     # Clean up tmp Info.plist
     FileUtils.rm_r(extract_location)
 
+    # Check if any of the above shell commands failed
+    if (bundle_version_string_exit > 0 || bundle_identifier_exit > 0 || bundle_display_name_exit > 0)
+      puts "Unable to parse build info from Info.plist"
+      return
+    end
+
     # Get last build's build version from file
     # Version file is json with the <major.minor> as the key
     # This way each app version has independent build numbers
@@ -116,12 +122,6 @@ class BotAWS
     end
 
     bundle_version_string = "#{major_minor}.#{build_version}"
-
-    # Check if any of the above shell commands failed
-    if (bundle_version_string_exit > 0 || bundle_identifier_exit > 0 || bundle_display_name_exit > 0)
-      puts "Unable to parse build info from Info.plist"
-      return
-    end
 
     upload_display_name = BotConfig.instance.aws_upload_display_name(branch_name)
     title = (upload_display_name ? upload_display_name : "#{bundle_display_name}-#{bundle_version_string}")
