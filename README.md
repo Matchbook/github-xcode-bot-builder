@@ -27,7 +27,7 @@ you will use as your *github_access_token* so that the **bot-sync-github** scrip
 
 Go to your [AWS IAM Console](https://console.aws.amazon.com/iam/home?#users), [create a user](http://docs.aws.amazon.com/AWSSdkDocsRuby/latest/DeveloperGuide/ruby-dg-setup.html) with "s3:ListBucket", "s3:PutObject" and "s3:PutObjectAcl" permissions and generate an access key for the AWS API which will allow uploading builds to S3.
 
-If running bot-sync-github on a Mac, create a Launch Agent file called "<Company identifier in revers DNS notation>.gitbot.plist" in ~/Library/LaunchAgents with the following contents:
+If running bot-sync-github on a Mac, create a Launch Agent file called "\<Company identifier in revers DNS notation\>.gitbot.plist" in ~/Library/LaunchAgents with the following contents:
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>
@@ -60,7 +60,7 @@ Send us a pull request with your troubleshooting tips here!
 
 Contributing
 ====================================
-* You may want to consider contributing to the [original project](https://github.com/modcloth-labs/github-xcode-bot-builder) as more people will probably benefit changes there.
+* You may want to consider contributing to the [original project](https://github.com/modcloth-labs/github-xcode-bot-builder) as more people will probably benefit from changes there.
 * Github Xcode Bot Builder uses [Jeweler](https://github.com/technicalpickles/jeweler) for managing the Gem, versioning, generating the Gemspec, etc. so do not manually edit the gemspec since it is auto generated from the Rakefile.
 * Check out the latest **master** to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
 * Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it.
