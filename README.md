@@ -37,7 +37,7 @@ bot-sync-github.cfg.sample has some notations explaining the options. Here are m
 
 *xcode_server_hostname* - The hostname of your xcode server. If bot-sync-github is on the same machine as your xcode server, this can be localhost. However, the Github web interface provides links to the xcode server web interface in pull requests statuses. In order for those links to work outside of the xcode server machine, put the external hostname or ip of xcode server here.
 
-*company_name (optional)* - Only relevant for uploading builds to AWS S3. This name appears in the HTML \<title\> tag.
+*company_name (optional)* - Only relevant for uploading builds to AWS S3. This text appears in the HTML \<title\> tag.
 
 *xcode_project_or_workspace* - The name of your xcode project or workspace to be CI'd.
 
