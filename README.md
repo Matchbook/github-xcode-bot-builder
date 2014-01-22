@@ -20,17 +20,39 @@ Make sure your Xcode server is correctly setup to allow ANYONE to create a build
 Then make sure you can manually create and execute a build and run it.
 
 Copy bot-sync-github.cfg.sample to ~/.bot-sync-github.cfg
+See bot-sync-github.cfg.sample for a sample config.
 
 Go to your [Github Account Settings](https://github.com/settings/applications) and create a personal access token which
 you will use as your *github_access_token* so that the **bot-sync-github** script can access your github repo.
 
 Go to your [AWS IAM Console](https://console.aws.amazon.com/iam/home?#users), [create a user](http://docs.aws.amazon.com/AWSSdkDocsRuby/latest/DeveloperGuide/ruby-dg-setup.html) with "s3:ListBucket", "s3:PutObject" and "s3:PutObjectAcl" permissions and generate an access key for the AWS API which will allow uploading builds to S3.
 
-Configuration
-====================================
+If running bot-sync-github on a Mac, create a Launch Agent file called "<Company identifier in revers DNS notation>.gitbot.plist" in ~/Library/LaunchAgents with the following contents:
 
-See bot-sync-github.cfg.sample for a sample config.
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string><company identifier in revers DNS notation>.gitbot</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/bot-sync-github</string>
+    </array>
+    <key>StartInterval</key>
+    <integer>60</integer>
+</dict>
+</plist>
+```
 
+After creating file, type:
+```
+launchctl load ~/Library/LaunchAgents/<plist filename>
+```
+to run bot-sync-github every 60 seconds.
+
+Other OSs will require a different method to run bot-sync-github (e.g. cron).
 
 Troubleshooting
 ====================================
@@ -38,9 +60,8 @@ Send us a pull request with your troubleshooting tips here!
 
 Contributing
 ====================================
-
-* Github Xcode Bot Builder uses [Jeweler](https://github.com/technicalpickles/jeweler) for managing the Gem, versioning,
-  generating the Gemspec, etc. so do not manually edit the gemspec since it is auto generated from the Rakefile.
+* You may want to consider contributing to the [original project](https://github.com/modcloth-labs/github-xcode-bot-builder) as more people will probably benefit changes there.
+* Github Xcode Bot Builder uses [Jeweler](https://github.com/technicalpickles/jeweler) for managing the Gem, versioning, generating the Gemspec, etc. so do not manually edit the gemspec since it is auto generated from the Rakefile.
 * Check out the latest **master** to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
 * Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it.
 * Fork the project.
@@ -48,11 +69,13 @@ Contributing
 * Commit and push until you are happy with your contribution.
 * Don't forget to add yourself to the contributors section below
 
-=Suggested features to contribute=
+Suggested features to contribute
+====================================
 * Support for configuring username and password to use with your Xcode server
 * Add specs that use VCR to help us add test coverage
 * Add support for multiple repositories
 * Add better error handling
+* Validation of config file
 * Update this README.md to make it easier for new users to get started and troubleshoot
 
 Contributors
@@ -65,7 +88,6 @@ Contributors
 
 Copyright
 ====================================
-
 Copyright (c) 2013 ModCloth. See LICENSE for further details.
 
 
