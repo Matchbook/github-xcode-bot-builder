@@ -124,9 +124,12 @@ class BotAWS
     bundle_version_string = "#{major_minor}.#{build_version}"
 
     upload_display_name = BotConfig.instance.aws_upload_display_name(branch_name)
+    upload_display_name = upload_display_name.sub('[[BR]]', branch_name)
     title = (upload_display_name ? upload_display_name : "#{bundle_display_name}-#{bundle_version_string}")
 
-    file_name = "#{bundle_identifier}-#{bundle_version_string}"
+    file_name = BotConfig.instance.aws_upload_plist_file_name(branch_name)
+    file_name = file_name.sub('[[BR]]', branch_name)
+    file_name = (file_name ? file_name : "#{bundle_identifier}-#{bundle_version_string}")
 
     # Check for existance of .plist so build is only uploaded ince
     if (s3_bucket.objects["#{file_name}.plist"].exists?)
@@ -177,6 +180,7 @@ class BotAWS
     company_name = BotConfig.instance.company_name
     html_string = template.render('company_name' => company_name, 'builds' => builds)
     html_name = BotConfig.instance.aws_upload_html_file_name(branch_name)
+    html_name = html_name.sub('[[BR]]', branch_name)
     html_file_name = (html_name ? html_name : "index")
     s3_bucket.objects["#{html_file_name}.html"].write(html_string, :acl => :public_read)
     puts "Uploaded #{html_file_name}.html on branch \"#{branch_name}\" to bucket #{upload_bucket}"

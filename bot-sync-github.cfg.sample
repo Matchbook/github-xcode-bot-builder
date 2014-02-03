@@ -21,6 +21,7 @@
       "pass_on_analyzer_issues" : <true|false> (defaults to false),
       "aws_upload_bucket" : <aws bucket name for branch> (if missing, uploading is disabled),
       "aws_upload_display_name" : <display name of app displayed to user> (if missing, CFBundleDisplayName is used),
+      "aws_upload_plist_file_name" : <name of plist file uploaded (if missing, <name>-<version> will be used)>,
       "aws_upload_html_file_name" : <name of html file uploaded (if missing, index.html will be used)>,
       "aws_upload_list_all_versions" : <true | false> (defaults to false),
       "git_tag_prefix" : <prefix for creating a git tag after upload> (if missing, no tag is created)
