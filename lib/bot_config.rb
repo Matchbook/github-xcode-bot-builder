@@ -80,6 +80,7 @@ class BotConfig
 
   def aws_upload_plist_file_name(br)
     branch_parameter(br, :aws_upload_plist_file_name)
+  end
 
   def aws_upload_html_file_name(br)
     branch_parameter(br, :aws_upload_html_file_name)
