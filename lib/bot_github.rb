@@ -112,6 +112,7 @@ class BotGithub
     # Delete bots that no longer have open pull requests or branches
     bots_unprocessed = bot_statuses.keys - bots_processed
     puts "Bots: #{bot_statuses}"
+    puts "Bots left: #{bots_unprocessed}"
     bots_unprocessed.each do |bot_short_name|
       bot = bot_statuses[bot_short_name]
       BotBuilder.instance.delete_bot(bot.guid) unless !is_managed_bot(bot)
