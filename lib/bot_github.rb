@@ -13,7 +13,7 @@ class BotGithub
     @client.login
   end
 
-  def sync
+  def sync(force_upload)
     puts "\nStarting Github Xcode Bot Builder #{Time.now}\n-----------------------------------------------------------"
     # Check to see if we're already running and skip this run if so
     running_instances = `ps aux | grep [b]ot-sync-github | grep -v bin/sh`.split("\n")
@@ -33,6 +33,7 @@ class BotGithub
         bots_processed << br.bot_short_name
         if (bot.nil?)
           # Create a new bot
+          should_upload = false
           xcode_devices = BotConfig.instance.xcode_devices(br.name)
           xcode_scheme = BotConfig.instance.xcode_scheme(br.name)
           BotBuilder.instance.create_bot(br.bot_short_name, br.bot_long_name, br.name,
@@ -63,17 +64,21 @@ class BotGithub
             create_status(br.sha, github_state_new, convert_bot_status_to_github_description(bot), bot.status_url)
             if (github_state_new == :success)
               puts "#{br.bot_long_name} passed!"
-              upload_bucket = BotConfig.instance.aws_upload_bucket(br.name)
-              if (upload_bucket)
-                BotAWS.instance.upload_build(bot, upload_bucket, br.name)
-              end
+              should_upload = true  
             end
           else
             puts "#{br.bot_long_name} (#{github_state_cur}) is up to date."
           end
-        end
-      end
-    end
+
+          if (should_upload || force_upload)
+            upload_bucket = BotConfig.instance.aws_upload_bucket(br.name)
+            if (upload_bucket)
+              BotAWS.instance.upload_build(bot, upload_bucket, br.name)
+            end
+          end
+        end # if bot
+      end # for each bot
+    end # if create on branch creation
 
     if (BotConfig.instance.test_on_pull_request)
       pull_requests.each do |pr|

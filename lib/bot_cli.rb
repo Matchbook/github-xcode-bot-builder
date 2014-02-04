@@ -33,7 +33,8 @@ def delete(args)
   end
 
   def sync_github(args)
-    BotGithub.instance.sync
+    force_upload = (args[0] == 'force_upload' ? true : false)
+    BotGithub.instance.sync(force_upload)
   end
 
 end
