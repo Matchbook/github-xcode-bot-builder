@@ -102,6 +102,7 @@ class BotAWS
 
     # Extract dSYM file
     app_id = BotConfig.instance.crittercism_app_id(branch_name)
+    puts "app_id: #{app_id}"
     if (app_id)
       dsym_file = File.join(bot_path, 'Archive.xcarchive', 'dSYMs', bundle_display_name)
       ziputil_path = File.join('/', 'usr', 'bin', 'zip')
