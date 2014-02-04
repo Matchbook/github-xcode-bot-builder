@@ -178,6 +178,7 @@ class BotAWS
     plist_template = IO.read(File.join(template_path, 'plist.template'))
     template = Liquid::Template.parse(plist_template)
     ipa_url = "https://#{upload_bucket}.s3.amazonaws.com/#{file_name}.ipa"
+    plist_url = "https://#{upload_bucket}.s3.amazonaws.com/#{file_name}.plist"
     plist_string = template.render(
       'ipa_url' => ipa_url,
       'bundle_identifier' => bundle_identifier,
@@ -202,7 +203,7 @@ class BotAWS
         end
       end
     else # Only list the plist that was just uploaded
-      build = {'url' => ipa_url, 'title' => title}
+      build = {'url' => plist_url, 'title' => title}
       builds << build
     end
     html_template = IO.read(File.join(template_path, 'html.template'))
