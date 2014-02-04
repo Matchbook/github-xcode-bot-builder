@@ -109,10 +109,11 @@ class BotAWS
       error = %x(#{ziputil_path} --quiet #{zip_file_path} #{dsym_file})
       if ($?.to_i == 0)
         curl_path = File.join('/', 'usr', 'bin', 'curl')
+        puts "Uploading dSYM to Crittercism"
         status = %x(#{curl_path} --write-out %{http_code} --silent --output /dev/null -F dsym=@"#{zip_file_path}" -F key="#{app_id}")
         puts "dSYM upload failed" unless status == 200
       else
-        puts "Unable to extract dSYM - #{error}"
+        puts "Unable to crete dSYM zip - #{error}"
       end
     end
 
