@@ -107,16 +107,23 @@ class BotAWS
     app_id = BotConfig.instance.crittercism_app_id(branch_name)
     puts "app_id: #{app_id}"
     if (app_id)
+
       dsym_file = "#{bundle_display_name}.app.dSYM"
       dsym_file_path = File.join(bot_path, 'Archive.xcarchive', 'dSYMs', dsym_file)
       ziputil_path = File.join('/', 'usr', 'bin', 'zip')
       zip_file_path = File.join(extract_location, 'dsym.zip')
       error = %x(#{ziputil_path} --recurse-paths --quiet #{zip_file_path} #{dsym_file_path})
       if ($?.to_i == 0)
-        curl_path = File.join('/', 'usr', 'bin', 'curl')
-        puts "Uploading dSYM to Crittercism"
-        status = %x(#{curl_path} --write-out %{http_code} --silent --output /dev/null -F dsym=@"#{zip_file_path}" -F key="#{app_id}")
-        puts "dSYM upload failed" unless status == 200
+        api_key = BotConfig.instance.crittercism_api_key(branch_name)
+        if (api_key)
+          curl_path = File.join('/', 'usr', 'bin', 'curl')
+          url = "https://api.crittercism.com/api_beta/dsym/#{app_id}"
+          puts "Uploading dSYM to Crittercism"
+          status = %x(#{curl_path} --write-out %{http_code} --silent --output /dev/null -F dsym=@"#{zip_file_path}" -F key="#{api_key}" #{url})
+          puts "dSYM upload failed" unless status == 200
+        else
+          puts "Missing Crittercism API key"
+        end
       else
         puts "Unable to create dSYM zip - #{error}"
       end

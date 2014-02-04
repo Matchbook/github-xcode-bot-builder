@@ -98,6 +98,10 @@ class BotConfig
     branch_parameter(br, :crittercism_app_id)
   end
 
+  def crittercism_api_key(br)
+    branch_parameter(br, :crittercism_api_key)
+  end
+
 private
 
   def branch_parameter(br, key)
