@@ -27,9 +27,6 @@ class BotAWS
 
   def upload_build(bot, upload_bucket, branch_name)
     # Get S3 bucket instance and check for its existance
-
-    puts "---------"
-
     s3_bucket = @s3.buckets[upload_bucket]
     if ( ! s3_bucket.exists?)
       puts "S3 bucket \"#{upload_bucket}\" does not exist"

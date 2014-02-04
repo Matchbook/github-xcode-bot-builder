@@ -49,6 +49,7 @@ class BotGithub
             pass_on_analyzer_issues = BotConfig.instance.pass_on_analyzer_issues(br.name)
             )
 
+          puts "------------------------"
           if (github_state_new == :pending && github_state_cur != github_state_new)
             # User triggered a new build by clicking Integrate on the Xcode server interface
             puts "#{br.bot_long_name} manually triggered."
