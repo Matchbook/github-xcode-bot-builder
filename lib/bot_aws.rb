@@ -131,11 +131,15 @@ class BotAWS
     file_name = file_name.sub('[[BR]]', branch_name) unless !file_name
     file_name = (file_name ? file_name : "#{bundle_identifier}-#{bundle_version_string}")
 
+    # This code is commented out because using a filename other than
+    # <bundle_display_name>-<bundle_version_string> wouldn't allow detection of
+    # file already uploaded
+
     # Check for existance of .plist so build is only uploaded ince
-    if (s3_bucket.objects["#{file_name}.plist"].exists?)
-      puts "A build already exists on S3 for #{title}"
-      return # Build already uploaded
-    end
+    #if (s3_bucket.objects["#{file_name}.plist"].exists?)
+    #  puts "A build already exists on S3 for #{title}"
+    #  return # Build already uploaded
+    #end
 
     puts "Uploading #{title}..."
 
