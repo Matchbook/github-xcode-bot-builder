@@ -101,8 +101,7 @@ class BotConfig
 private
 
   def branch_parameter(br, key)
-    if (@config[:branches].key?(br.intern))
-      && (@config[:branches][br.intern].key?(key))
+    if (@config[:branches].key?(br.intern)) && (@config[:branches][br.intern].key?(key))
       # There is a config for this branch and it contains this key
       @config[:branches][br.intern][key]
     end
