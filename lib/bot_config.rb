@@ -101,8 +101,10 @@ class BotConfig
 private
 
   def branch_parameter(br, key)
+    puts "Config :: #{br}-#{key}"
     if (@config[:branches].key?(br.intern)) && (@config[:branches][br.intern].key?(key))
       # There is a config for this branch and it contains this key
+      puts "branch :: #{@config[:branches][br.intern][key]}"
       @config[:branches][br.intern][key]
     end
 
@@ -111,6 +113,7 @@ private
     # inherite the values of the default config and can override them.
 
     if (@config[:branches].key?(:default)) # Check to insure default section exists
+      puts "default :: #{@config[:branches][:default][key]}"
       @config[:branches][:default][key]
     else
       nil
