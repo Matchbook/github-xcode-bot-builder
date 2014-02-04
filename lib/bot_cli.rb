@@ -33,7 +33,7 @@ def delete(args)
   end
 
   def sync_github(args)
-    BotGithub.instance.sync 
+    BotGithub.instance.sync
   end
 
 end
