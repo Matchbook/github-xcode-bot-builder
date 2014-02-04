@@ -33,8 +33,7 @@ class BotAWS
       return
     end
 
-    # Build path to .ipa and check for its existance
-    ipa_file_name = File.join(
+    bot_path = File.join(
       '/',
       'Library',
       'Server',
@@ -42,9 +41,11 @@ class BotAWS
       'Data',
       'BotRuns',
       "BotRun-#{bot.latestSuccessfulBotRunGUID}.bundle",
-      'output',
-      "#{bot.long_name}.ipa"
+      'output'
       )
+
+    # Build path to .ipa and check for its existance
+    ipa_file_name = File.join(bot_path, "#{bot.long_name}.ipa")
     if ( ! File.exists?(ipa_file_name))
       puts "File not uploaded. \"#{ipa_file_name}\" does not exist"
       return
@@ -93,14 +94,30 @@ class BotAWS
     bundle_display_name = %x(#{plist_buddy_path} -c "Print CFBundleDisplayName" #{info_plist_location}).strip
     bundle_display_name_exit = $?.to_i
 
-    # Clean up tmp Info.plist
-    FileUtils.rm_r(extract_location)
-
     # Check if any of the above shell commands failed
     if (bundle_version_string_exit > 0 || bundle_identifier_exit > 0 || bundle_display_name_exit > 0)
       puts "Unable to parse build info from Info.plist"
       return
     end
+
+    # Extract dSYM file
+    app_id = BotConfig.instance.crittercism_app_id(branch_name)
+    if (app_id)
+      dsym_file = File.join(bot_path, 'Archive.xcarchive', 'dSYMs', bundle_display_name)
+      ziputil_path = File.join('/', 'usr', 'bin', 'zip')
+      zip_file_path = File.join(extract_location, 'dsym.zip')
+      error = %x(#{ziputil_path} --quiet #{zip_file_path} #{dsym_file})
+      if ($?.to_i == 0)
+        curl_path = File.join('/', 'usr', 'bin', 'curl')
+        status = %x(#{curl_path} --write-out %{http_code} --silent --output /dev/null -F dsym=@"#{zip_file_path}" -F key="#{app_id}")
+        puts "dSYM upload failed" unless status == 200
+      else
+        puts "Unable to extract dSYM - #{error}"
+      end
+    end
+
+    # Clean up tmp Info.plist
+    FileUtils.rm_r(extract_location)
 
     # Get last build's build version from file
     # Version file is json with the <major.minor> as the key
