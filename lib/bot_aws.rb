@@ -120,7 +120,7 @@ class BotAWS
           url = "https://api.crittercism.com/api_beta/dsym/#{app_id}"
           puts "Uploading dSYM to Crittercism"
           status = %x(#{curl_path} --write-out %{http_code} --silent --output /dev/null -F dsym=@"#{zip_file_path}" -F key="#{api_key}" #{url})
-          puts "dSYM upload failed" unless status == 200
+          puts "dSYM upload failed - #{status}" unless status == 200
         else
           puts "Missing Crittercism API key"
         end
