@@ -94,13 +94,24 @@ class BotConfig
     branch_parameter(br, :git_tag_prefix)
   end
 
+  def crittercism_app_id(br)
+    branch_parameter(br, :crittercism_app_id)
+  end
+
 private
 
   def branch_parameter(br, key)
-    if (@config[:branches].key?(br.intern))
+    if (@config[:branches].key?(br.intern)
+      && @config[:branches][br.intern].key?(key))
+      # There is a config for this branch and it contains this key
       @config[:branches][br.intern][key]
-    # If there's no config for this branch, use the default section
-    elsif (@config[:branches].key?(:default))
+    end
+
+    # If key does not exist on the branch specific config, check the default config
+    # This allows there to be an inheritance to the config - branch specific configs
+    # inherite the values of the default config and can override them.
+
+    if (@config[:branches].key?(:default)) # Check to insure default section exists
       @config[:branches][:default][key]
     else
       nil

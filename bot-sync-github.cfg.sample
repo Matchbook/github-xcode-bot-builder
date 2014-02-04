@@ -24,7 +24,8 @@
       "aws_upload_plist_file_name" : <name of plist file uploaded (if missing, <name>-<version> will be used)>,
       "aws_upload_html_file_name" : <name of html file uploaded (if missing, index.html will be used)>,
       "aws_upload_list_all_versions" : <true | false> (defaults to false),
-      "git_tag_prefix" : <prefix for creating a git tag after upload> (if missing, no tag is created)
+      "git_tag_prefix" : <prefix for creating a git tag after upload> (if missing, no tag is created),
+      "crittercism_app_id" : <crittercism app id for uploading dsym (if missing, no dsym upload is made)>
     },
     "default" : { ("default" is required with the following parameters)
       "xcode_devices" : [ (at least one required)
