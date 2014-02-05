@@ -182,7 +182,7 @@ class BotAWS
     s3_bucket.objects["#{file_name}.ipa"].write(
       :file => ipa_file_name,
       :acl => :public_read,
-      :content_type = 'application/octet-stream')
+      :content_type => 'application/octet-stream')
     puts "Uploaded ipa for \"#{title}\" on branch \"#{branch_name}\" to bucket #{upload_bucket}"
 
     base_url = BotConfig.instance.aws_bucket_base_url(branch_name)
@@ -203,7 +203,7 @@ class BotAWS
     s3_bucket.objects["#{file_name}.plist"].write(
       plist_string,
       :acl => :public_read,
-      :content_type = 'text/xml')
+      :content_type => 'text/xml')
     puts "Uploaded plist for \"#{title}\" on branch \"#{branch_name}\" to bucket #{upload_bucket}"
 
     # Create and upload html file
@@ -235,7 +235,7 @@ class BotAWS
     s3_bucket.objects["#{html_file_name}.html"].write(
       html_string,
       :acl => :public_read,
-      :content_type = 'text/html')
+      :content_type => 'text/html')
     puts "Uploaded #{html_file_name}.html on branch \"#{branch_name}\" to bucket #{upload_bucket}"
 
     # Clone or open repo so version can be bumped
