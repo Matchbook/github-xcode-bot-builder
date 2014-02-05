@@ -129,7 +129,9 @@ class BotAWS
     # Get last build's build version from file
     # Version file is json with the <major.minor> as the key
     # This way each app version has independent build numbers
-    version_file_path = File.join('/', 'tmp', 'gitbot', '.last-build-version')
+    gitbot_prefs_path = File.join('~/', '.gitbot')
+    FileUtils.mkdir_p(gitbot_prefs_path)
+    version_file_path = File.join(gitbot_prefs_path, 'last-build-version')
     vs_components = bundle_version_string.split('.')
     major_minor = "#{vs_components[0]}.#{vs_components[1]}" unless vs_components.count < 2
     existing_build_version = "#{vs_components[2]}" unless vs_components.count < 3
