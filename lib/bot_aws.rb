@@ -155,8 +155,8 @@ class BotAWS
     title = (upload_display_name ? upload_display_name : "#{bundle_display_name}-#{bundle_version_string}")
 
     file_name = BotConfig.instance.aws_upload_plist_file_name(branch_name)
-    file_name = file_name.sub('[[BR]]', branch_name) unless !file_namegs
-    
+    file_name = file_name.sub('[[BR]]', branch_name) unless !file_name
+
     file_name = file_name.sub('[[VS]]', bundle_version_string) unless !file_name
     file_name = (file_name ? file_name : "#{bundle_identifier}-#{bundle_version_string}")
 
