@@ -103,9 +103,7 @@ class BotAWS
     # Extract dSYM file
     app_id = BotConfig.instance.crittercism_app_id(branch_name)
     if (app_id)
-
-      dsym_file = "#{bundle_display_name}.app.dSYM"
-      dsym_file_path = File.join(bot_path, 'Archive.xcarchive', 'dSYMs', dsym_file)
+      dsym_file_path = File.join(bot_path, 'Archive.xcarchive', 'dSYMs', "#{bundle_display_name}.app.dSYM")
       ziputil_path = File.join('/', 'usr', 'bin', 'zip')
       zip_file_path = File.join(extract_location, 'dsym.zip')
       error = %x(#{ziputil_path} --recurse-paths --quiet #{zip_file_path} #{dsym_file_path})
@@ -133,18 +131,25 @@ class BotAWS
     # This way each app version has independent build numbers
     version_file_path = File.join('/', 'tmp', 'gitbot', '.last-build-version')
     vs_components = bundle_version_string.split('.')
-    major_minor = "#{vs_components[0]}.#{vs_components[1]}"
+    major_minor = "#{vs_components[0]}.#{vs_components[1]}" unless vs_components.count < 2
+    existing_build_version = "#{vs_components[2]}" unless vs_components.count < 3
+
+    if ( ! major_minor)
+      puts "Invalid version number - stopping"
+      return
+    end
 
     if (File.exist?(version_file_path))
       build_versions = JSON.parse(IO.read(version_file_path))
     else
       build_versions = {}
     end
+
     if (build_versions[major_minor])
       build_version = build_versions[major_minor].to_i
       build_version = build_version + 1
     else
-      build_version = 0
+      build_version = existing_build_version.to_i
     end
 
     bundle_version_string = "#{major_minor}.#{build_version}"
