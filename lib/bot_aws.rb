@@ -151,10 +151,13 @@ class BotAWS
 
     upload_display_name = BotConfig.instance.aws_upload_display_name(branch_name)
     upload_display_name = upload_display_name.sub('[[BR]]', branch_name) unless !upload_display_name
+    upload_display_name = upload_display_name.sub('[[VS]]', bundle_version_string) unless !upload_display_name
     title = (upload_display_name ? upload_display_name : "#{bundle_display_name}-#{bundle_version_string}")
 
     file_name = BotConfig.instance.aws_upload_plist_file_name(branch_name)
-    file_name = file_name.sub('[[BR]]', branch_name) unless !file_name
+    file_name = file_name.sub('[[BR]]', branch_name) unless !file_namegs
+    
+    file_name = file_name.sub('[[VS]]', bundle_version_string) unless !file_name
     file_name = (file_name ? file_name : "#{bundle_identifier}-#{bundle_version_string}")
 
     # This code is commented out because using a filename other than
@@ -173,12 +176,15 @@ class BotAWS
     s3_bucket.objects["#{file_name}.ipa"].write(:file => ipa_file_name, :acl => :public_read)
     puts "Uploaded ipa for \"#{title}\" on branch \"#{branch_name}\" to bucket #{upload_bucket}"
 
+    base_url = BotConfig.instance.aws_bucket_base_url(branch_name)
+    base_url = (base_url ? base_url : "https://#{upload_bucket}.s3.amazonaws.com")
+
     # Create and upload plist
     template_path = File.join(File.dirname(__FILE__), '..', 'templates')
     plist_template = IO.read(File.join(template_path, 'plist.template'))
     template = Liquid::Template.parse(plist_template)
-    ipa_url = "https://#{upload_bucket}.s3.amazonaws.com/#{file_name}.ipa"
-    plist_url = "https://#{upload_bucket}.s3.amazonaws.com/#{file_name}.plist"
+    ipa_url = "#{base_url}/#{file_name}.ipa"
+    plist_url = "#{base_url}/#{file_name}.plist"
     plist_string = template.render(
       'ipa_url' => ipa_url,
       'bundle_identifier' => bundle_identifier,
@@ -196,7 +202,7 @@ class BotAWS
     if (list_versions) # List each plist found in the bucket
       s3_bucket.objects.each do |object|
         if (object.key.end_with?('plist'))
-          url = "http://#{upload_bucket}.s3.amazonaws.com/#{object.key}"
+          url = "#{base_url}/#{object.key}"
           v_number = object.key.split('-')[-1].sub('.plist', '')
           build = {'url' => url, 'title' => "#{bundle_display_name}-#{v_number}"}
           builds << build
@@ -212,6 +218,7 @@ class BotAWS
     html_string = template.render('company_name' => company_name, 'builds' => builds)
     html_name = BotConfig.instance.aws_upload_html_file_name(branch_name)
     html_name = html_name.sub('[[BR]]', branch_name) unless !html_name
+    html_name = html_name.sub('[[VS]]', bundle_version_string) unless !html_name
     html_file_name = (html_name ? html_name : "index")
     s3_bucket.objects["#{html_file_name}.html"].write(html_string, :acl => :public_read)
     puts "Uploaded #{html_file_name}.html on branch \"#{branch_name}\" to bucket #{upload_bucket}"

@@ -74,6 +74,10 @@ class BotConfig
     branch_parameter(br, :aws_upload_bucket)
   end
 
+  def aws_bucket_base_url(br)
+    branch_parameter(br, :aws_bucket_base_url)
+  end
+
   def aws_upload_display_name(br)
     branch_parameter(br, :aws_upload_display_name)
   end
